@@ -1,14 +1,14 @@
 package com.kashier;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * JavaFX App
@@ -161,6 +161,38 @@ public class App extends Application {
         inventory.add(item7);
         inventory.add(item8);
         inventory.add(item9);
+        
+        Scanner sc  = new Scanner(System.in);
+		String user;
+		String pass;
+		int flag=0;
+		
+		ArrayList<Account> accounts = new ArrayList<Account>();
+		Account temp1 = new Account("admin1", "password1");
+		accounts.add(temp1);
+		Account temp2 = new Account("admin2", "password2");
+		accounts.add(temp2);
+		Account temp3 = new Account("admin3", "password3");
+		accounts.add(temp3);
+		
+		do {
+			System.out.println("Welcome to Kashier! Please input your credentials to proceed.");
+			System.out.printf("Enter username: ");
+			user = sc.nextLine();
+			System.out.printf("Enter password: ");
+			pass = sc.nextLine();
+			
+			for(int i = 0; i<accounts.size(); i++) {
+				if(accounts.get(i).getUser().contains(user) && accounts.get(i).getPass().contains(pass)) {
+					flag++;
+				}
+			}
+			
+			if(flag==0){ 
+				System.out.println("Wrong username or password!");
+			}
+		}while(flag==0);
+		System.out.println("Log In Sucessful!");
         
 //        launch();
     }
