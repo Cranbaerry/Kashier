@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * JavaFX App
@@ -15,17 +16,110 @@ import java.util.ArrayList;
 public class App extends Application {
 
     private static Scene scene;
+    Scanner scan = new Scanner(System.in);
+    public static ArrayList<Item> inventory = new ArrayList<Item>();
     
-    private ArrayList<Inventory> inv = new ArrayList<Inventory>();
-    Inventory item1 = new Inventory("Ramen Set", 10, 200000, "qr1");
-    Inventory item2 = new Inventory("Mushroom Cream Soup", 10, 50000, "qr2");
-    Inventory item3 = new Inventory("Chicken Katsu Set", 10, 100000, "qr3");
-    Inventory item4 = new Inventory("Chicken Corden Blue", 10, 150000, "qr4");
-    Inventory item5 = new Inventory("French Fries", 10, 20000, "qr5");
-    Inventory item6 = new Inventory("Spaghetti Carbonara", 10, 50000, "qr6");
-    Inventory item7 = new Inventory("Fish'n Chips", 10, 100000, "qr7");
-    Inventory item8 = new Inventory("Chicken Teriyaki Set", 10, 100000, "qr8");
-    Inventory item9 = new Inventory("Fettucine Mushroom & Cream", 10, 200000, "qr9");
+    int search(ArrayList<Item> arr, Item item){
+        int l = 0, r = arr.size() - 1;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            if (arr.get(m).getItemName().toLowerCase() == item.getItemName().toLowerCase() && arr.get(m).getItemQR().toLowerCase() == item.getItemQR().toLowerCase())
+                return m; 
+            if (arr.get(m).getItemName().compareToIgnoreCase(item.getItemName()) < 0)
+                l = m + 1;
+            else
+                r = m - 1;
+        }
+ 
+        return -1;
+    }
+    
+    public void addItem() {
+    	String name;
+    	int qty;
+    	double price;
+    	String qr;
+    	System.out.print("Input item name: ");
+    	name = scan.nextLine();
+    	
+    	System.out.print("Input item quantity: ");
+    	qty = scan.nextInt(); scan.nextLine();
+    	
+    	System.out.print("Input item price: ");
+    	price = scan.nextDouble(); scan.nextLine();
+    	
+    	System.out.print("Input item qr: ");
+    	qr = scan.nextLine();
+    	
+    	Item item = new Item(name, qty, price, qr);
+    	
+    	if(search(inventory, item) > 0) {
+    		inventory.get(search(inventory, item)).setItemQty(inventory.get(search(inventory, item)).getItemQty() + item.getItemQty());
+    	}else {
+    		inventory.add(item);
+    	}
+    	
+    	System.out.println("Item added!");
+    }
+    
+    public void updateItem() {
+    	String name, qr;
+    	int qty; double price;
+    	System.out.print("Input item name: ");
+    	name = scan.nextLine();
+    	
+    	System.out.print("Input item qr: ");
+    	qr = scan.nextLine();
+    	
+    	Item item = new Item(name, 0, 0, qr);
+    	
+    	if(search(inventory, item) < 0) {
+    		System.out.println("Item Not Found");
+    		return;
+    	}else {
+    		System.out.print("Input new item name: ");
+        	name = scan.nextLine();
+        	
+        	System.out.print("Input new item quantity: ");
+        	qty = scan.nextInt(); scan.nextLine();
+        	
+        	System.out.print("Input new item price: ");
+        	price = scan.nextDouble(); scan.nextLine();
+        	
+        	System.out.print("Input new item qr: ");
+        	qr = scan.nextLine();
+        	
+        	int idx = search(inventory, item);
+        	inventory.get(idx).setItemName(name);
+        	inventory.get(idx).setItemQty(qty);
+        	inventory.get(idx).setItemPrice(price);
+        	inventory.get(idx).setItemQR(qr);
+        	
+        	System.out.println("Item updated!");
+    	}
+    		
+    }
+    
+    public void removeItem() {
+    	String name, qr;
+    	System.out.print("Input item name: ");
+    	name = scan.nextLine();
+    	
+    	System.out.print("Input item qr: ");
+    	qr = scan.nextLine();
+    	
+    	Item item = new Item(name, 0, 0, qr);
+    	
+    	if(search(inventory, item) < 0) {
+    		System.out.println("Item Not Found");
+    		return;
+    	}else {
+    		inventory.remove(search(inventory, item));
+    		System.out.println("Item removed!");
+    	}
+    	
+    	
+    }
   
 
     @Override
@@ -47,7 +141,28 @@ public class App extends Application {
     
 
     public static void main(String[] args) {
-        launch();
+    	
+        Item item1 = new Item("Ramen Set", 10, 200000, "qr1");
+        Item item2 = new Item("Mushroom Cream Soup", 10, 50000, "qr2");
+        Item item3 = new Item("Chicken Katsu Set", 10, 100000, "qr3");
+        Item item4 = new Item("Chicken Corden Blue", 10, 150000, "qr4");
+        Item item5 = new Item("French Fries", 10, 20000, "qr5");
+        Item item6 = new Item("Spaghetti Carbonara", 10, 50000, "qr6");
+        Item item7 = new Item("Fish'n Chips", 10, 100000, "qr7");
+        Item item8 = new Item("Chicken Teriyaki Set", 10, 100000, "qr8");
+        Item item9 = new Item("Fettucine Mushroom & Cream", 10, 200000, "qr9");
+        
+        inventory.add(item1);
+        inventory.add(item2);
+        inventory.add(item3);
+        inventory.add(item4);
+        inventory.add(item5);
+        inventory.add(item6);
+        inventory.add(item7);
+        inventory.add(item8);
+        inventory.add(item9);
+        
+//        launch();
     }
 
 }
