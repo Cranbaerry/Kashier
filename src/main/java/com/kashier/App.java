@@ -76,26 +76,25 @@ public class App extends Application {
 
             // Inventory controller test: Get Items
             InventoryController inventory = new InventoryController();
-            HashMap<String, InventoryItem> inv = inventory.getItems();
-            for (String key : inv.keySet()) {
-                System.out.println("Key: " + key + " Value: " + inv.get(key).getStock());
-            }
 
             // Inventory controller test: Upsert Item
-            // Dummy item, qr is important; rest is not
             obj = new JSONObject();
             obj.put("qr", "123");
-            obj.put("stock", 10);
             obj.put("price", 69);
             obj.put("name", "WHAT");
 
             InventoryItem invItem = new InventoryItem(obj);
-            invItem.setStock(10);
-            inventory.addItem(invItem);
+            inventory.addItem(invItem, 1);
+            System.out.println("QR code: " + invItem.getQR() + " updated stock to " + invItem.getStock());
 
-            // Inventory controller test: Delete Item (set stock to 1)
-            invItem.setStock(1);
-            inventory.removeItem(invItem);
+            System.out.println("Inventory items: ");
+            inventory.printInventory();
+
+            // Inventory controller test: Remove Item
+            inventory.removeItem(invItem, 5);
+
+            System.out.println("After Inventory items: ");
+            inventory.printInventory();
         } catch (Exception e) {
             e.printStackTrace();
         }

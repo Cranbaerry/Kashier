@@ -2,7 +2,6 @@ package com.kashier.controllers;
 
 import com.harium.postgrest.Condition;
 import com.harium.postgrest.Insert;
-import com.kashier.models.Inventory;
 import com.kashier.models.Item;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
