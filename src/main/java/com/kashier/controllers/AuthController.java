@@ -12,8 +12,8 @@ public class AuthController {
     private Account account;
     public boolean login(String username, String password) throws IOException {
         Condition conditions = Condition.and(
-                Condition.eq("username", username),
-                Condition.eq("password", password)
+            Condition.eq("username", username),
+            Condition.eq("password", password)
         );
 
         String result = supabase.database().find("users", conditions);

@@ -22,7 +22,7 @@ public class InventoryController {
         ItemController itemController = new ItemController();
         String result = supabase.database().findAll("inventory");
         JsonArray data = (JsonArray) JsonParser.parseString(result);
-        inventory = new HashMap<String, InventoryItem>();
+        inventory = new HashMap<>();
         for (Object o : data) {
             JsonObject itemObj = (JsonObject) o;
             InventoryItem item = new Gson().fromJson(itemObj, InventoryItem.class);
@@ -56,8 +56,8 @@ public class InventoryController {
 
         // Save to database
         Insert.Row data = Insert.row()
-                .column("qr", item.getQR())
-                .column("stock", item.getStock());
+            .column("qr", item.getQR())
+            .column("stock", item.getStock());
         supabase.database().save("inventory", data);
 
         // Add to inventory
@@ -110,11 +110,5 @@ public class InventoryController {
         }
 
         return null;
-    }
-
-    public void printInventory() {
-        for (String key : inventory.keySet()) {
-            System.out.println(inventory.get(key).getQR() + " " + inventory.get(key).getStock());
-        }
     }
 }

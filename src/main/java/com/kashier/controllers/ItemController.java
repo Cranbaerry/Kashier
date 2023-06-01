@@ -6,16 +6,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.harium.postgrest.Condition;
 import com.harium.postgrest.Insert;
-import com.kashier.models.Account;
-import com.kashier.models.InventoryItem;
 import com.kashier.models.Item;
-
-
 import java.io.IOException;
 import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static com.kashier.App.supabase;
 
@@ -24,9 +18,9 @@ public class ItemController {
     public Item upsertItem(Item itemObj) {
         try {
             Insert.Row data = Insert.row()
-                    .column("qr", itemObj.getQR())
-                    .column("name", itemObj.getName())
-                    .column("price", itemObj.getPrice());
+                .column("qr", itemObj.getQR())
+                .column("name", itemObj.getName())
+                .column("price", itemObj.getPrice());
             supabase.database().save("items", data);
             return itemObj;
         } catch (IOException e) {
@@ -40,8 +34,8 @@ public class ItemController {
             // Soft deletion is done by setting the deleted_at column to the current timestamp
             Instant instant = Instant.now();
             Insert.Row data = Insert.row()
-                    .column("qr", qr)
-                    .column("deleted_at", instant.toString());
+                .column("qr", qr)
+                .column("deleted_at", instant.toString());
 
             supabase.database().save("items", data);
             return true;
@@ -55,7 +49,7 @@ public class ItemController {
         try {
             String result = supabase.database().findAll("items");
             JsonArray itemsData = (JsonArray) JsonParser.parseString(result);
-            ArrayList<Item> items = new ArrayList<Item>();
+            ArrayList<Item> items = new ArrayList<>();
             for (Object o : itemsData) {
                 JsonObject itemObj = (JsonObject) o;
                 Item item = new Gson().fromJson(itemObj, Item.class);
@@ -75,15 +69,14 @@ public class ItemController {
         try {
             // Bug in postgrest-java library, cannot use Condition.eq("qr", qr) directly (must use Condition.and)
             Condition conditions = Condition.and(
-                    Condition.eq("qr", qr)
+                Condition.eq("qr", qr)
             );
             String result = supabase.database().find("items", conditions);
             JsonArray data = (JsonArray) JsonParser.parseString(result);
 
             if (data.size() == 0) return null;
             JsonObject itemObj = (JsonObject) data.get(0);
-            Item item = new Gson().fromJson(itemObj, Item.class);
-            return item;
+            return new Gson().fromJson(itemObj, Item.class);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
