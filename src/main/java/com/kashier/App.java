@@ -16,7 +16,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import com.harium.supabase.SupabaseClient;
 
-
 /**
  * JavaFX App
  */
@@ -24,10 +23,7 @@ public class App extends Application {
     private static Scene scene;
     private static final String SUPABASE_URL = "https://xgswsvlpfuhdaqrywzhf.supabase.co";
     private static final String SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhnc3dzdmxwZnVoZGFxcnl3emhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODU1MTk1MzYsImV4cCI6MjAwMTA5NTUzNn0.64nZasGodkopk4TF0uSU95s4uwvAGavsYbjL9P2Bkh4";
-
     public static SupabaseClient supabase;
-
-
 
     @Override
     public void start(Stage stage) throws IOException {

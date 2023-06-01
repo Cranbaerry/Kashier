@@ -1,8 +1,10 @@
 package com.kashier.models;
 
+import com.kashier.interfaces.IInvoice;
+
 import java.util.ArrayList;
 
-public class Invoice {
+public class Invoice implements IInvoice {
     private float total, discount, fee;
     private String id;
     private ArrayList<InvoiceItem> items;

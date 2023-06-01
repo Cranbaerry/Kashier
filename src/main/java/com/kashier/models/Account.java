@@ -1,7 +1,9 @@
 package com.kashier.models;
 
 
-public class Account {
+import com.kashier.interfaces.IAccount;
+
+public class Account implements IAccount {
     private String id, username, password;
     private Integer roleId;
 
