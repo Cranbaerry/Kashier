@@ -1,95 +1,107 @@
 package com.kashier.controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.harium.postgrest.Condition;
 import com.harium.postgrest.Insert;
 import com.kashier.models.InventoryItem;
 import com.kashier.models.Item;
-import org.json.simple.JSONArray;
 
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-
-import static com.kashier.App.parser;
 import static com.kashier.App.supabase;
 
 
 public class InventoryController {
     private HashMap<String, InventoryItem> inventory;
 
-    public InventoryController() throws ParseException, IOException {
+    public InventoryController() throws  IOException {
         ItemController itemController = new ItemController();
         String result = supabase.database().findAll("inventory");
-        JSONArray data = (JSONArray) parser.parse(result);
+        JsonArray data = (JsonArray) JsonParser.parseString(result);
         inventory = new HashMap<String, InventoryItem>();
         for (Object o : data) {
-            JSONObject itemObj = (JSONObject) o;
-            Item item = itemController.getItemByQR((String) itemObj.get("qr"));
-            if (item == null) continue;
-            System.out.println(item.getQR());
-            itemObj.put("name", item.getName());
-            itemObj.put("price", item.getPrice());
+            JsonObject itemObj = (JsonObject) o;
+            InventoryItem item = new Gson().fromJson(itemObj, InventoryItem.class);
+            Item details = itemController.getItemByQR(item.getQR());
+            if (details == null) throw new IOException("Item not found: " + item.getQR());
 
-            InventoryItem inventoryItem = new InventoryItem(itemObj);
-            inventoryItem.setStock(Integer.parseInt(itemObj.get("stock").toString()));
-            inventory.put(inventoryItem.getQR(), inventoryItem);
+            item.setName(details.getName());
+            item.setPrice(details.getPrice());
+            inventory.put(item.getQR(), item);
         }
     }
 
-    public void addItem(InventoryItem itemObj, int quantity) throws IOException {
+    public InventoryItem addItem(String qr, int quantity) throws IOException {
         // Check if item already exists
-        InventoryItem existingItem = getItemByQR(itemObj.getQR());
+        InventoryItem item = getItemByQR(qr);
 
-        // If item exists, increment quantity
-        if (existingItem != null) {
-            itemObj.setStock(existingItem.getStock() + quantity);
+        // If item exists in the inventory, update quantity
+        if (item != null) {
+            item = inventory.get(qr);
+            item.setStock(item.getStock() + quantity);
+        } else {
+            // Grab item details from items table
+            item = new InventoryItem();
+            Item details = new ItemController().getItemByQR(qr);
+            if (details == null) throw new IOException("Item not found: " + qr);
+            item.setName(details.getName());
+            item.setPrice(details.getPrice());
+            item.setQR(qr);
+            item.setStock(quantity);
         }
 
         // Save to database
         Insert.Row data = Insert.row()
-                .column("qr", itemObj.getQR())
-                .column("stock", itemObj.getStock());
+                .column("qr", item.getQR())
+                .column("stock", item.getStock());
         supabase.database().save("inventory", data);
 
         // Add to inventory
-        inventory.put(itemObj.getQR(), itemObj);
+        inventory.put(item.getQR(), item);
+        return inventory.get(item.getQR());
     }
 
-    public void removeItem(InventoryItem itemObj, int quantity) throws Exception {
+    public InventoryItem removeItem(String qr, int quantity) throws Exception {
         // Check if item already exists
-        InventoryItem existingItem = getItemByQR(itemObj.getQR());
+        InventoryItem item = getItemByQR(qr);
 
-        // If item exists, decrease quantity
-        if (existingItem != null) {
-            itemObj.setStock(existingItem.getStock() - quantity);
-            // If item quantity is 0, remove item
+        // If item exists in the inventory, update quantity
+        if (item != null) {
+            item = inventory.get(qr);
+            item.setStock(item.getStock() - quantity);
 
-            if (itemObj.getStock() <= 0) {
+            if (item.getStock() <= 0) {
                 // Delete from database
                 Condition conditions = Condition.and(
-                        Condition.eq("qr", itemObj.getQR())
+                        Condition.eq("qr", item.getQR())
                 );
                 supabase.database().delete("items", conditions);
-                System.out.println("Deleted item: " + itemObj.getQR());
 
                 // Remove from inventory
-                inventory.remove(itemObj.getQR());
+                inventory.remove(item.getQR());
             } else {
                 // Save to database
                 Insert.Row data = Insert.row()
-                        .column("qr", itemObj.getQR())
-                        .column("stock", itemObj.getStock());
+                        .column("qr", item.getQR())
+                        .column("stock", item.getStock());
                 supabase.database().save("inventory", data);
-                System.out.println("Updated item: " + itemObj.getQR());
 
                 // Update item quantity
-                inventory.put(itemObj.getQR(), itemObj);
+                inventory.put(item.getQR(), item);
             }
-        } else {
-            throw new Exception("Item does not exist");
+
+            return inventory.get(item.getQR());
         }
+
+        return null;
+    }
+
+    public HashMap<String, InventoryItem> getInventory() {
+        return inventory;
     }
 
     public InventoryItem getItemByQR(String qr) {

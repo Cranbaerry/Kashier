@@ -1,11 +1,15 @@
 package com.kashier.controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.harium.postgrest.Condition;
 import com.harium.postgrest.Insert;
+import com.kashier.models.Account;
+import com.kashier.models.InventoryItem;
 import com.kashier.models.Item;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
+
 
 import java.io.IOException;
 import java.time.Instant;
@@ -13,7 +17,6 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.kashier.App.parser;
 import static com.kashier.App.supabase;
 
 
@@ -32,37 +35,37 @@ public class ItemController {
         }
     }
 
-    public Item removeItem(Item itemObj) {
+    public boolean removeItem(String qr) {
         try {
             // Soft deletion is done by setting the deleted_at column to the current timestamp
             Instant instant = Instant.now();
             Insert.Row data = Insert.row()
-                    .column("qr", itemObj.getQR())
+                    .column("qr", qr)
                     .column("deleted_at", instant.toString());
 
             supabase.database().save("items", data);
-            return itemObj;
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return false;
         }
     }
 
     public ArrayList<Item> getItems() {
         try {
             String result = supabase.database().findAll("items");
-            JSONArray itemsData = (JSONArray) parser.parse(result);
+            JsonArray itemsData = (JsonArray) JsonParser.parseString(result);
             ArrayList<Item> items = new ArrayList<Item>();
             for (Object o : itemsData) {
-                JSONObject itemObj = (JSONObject) o;
+                JsonObject itemObj = (JsonObject) o;
+                Item item = new Gson().fromJson(itemObj, Item.class);
                 // Skip soft deleted items
-                if (itemObj.get("deleted_at") != null) continue;
-                Item item = new Item(itemObj);
+                if (item.getDeletedAt() != null) continue;
                 items.add(item);
             }
 
             return items;
-        } catch (IOException | ParseException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
@@ -72,16 +75,16 @@ public class ItemController {
         try {
             // Bug in postgrest-java library, cannot use Condition.eq("qr", qr) directly (must use Condition.and)
             Condition conditions = Condition.and(
-                    Condition.eq("qr", "123")
+                    Condition.eq("qr", qr)
             );
             String result = supabase.database().find("items", conditions);
-            JSONArray data = (JSONArray) parser.parse(result);
+            JsonArray data = (JsonArray) JsonParser.parseString(result);
 
             if (data.size() == 0) return null;
-            JSONObject itemObj = (JSONObject) data.get(0);
-            Item item = new Item(itemObj);
+            JsonObject itemObj = (JsonObject) data.get(0);
+            Item item = new Gson().fromJson(itemObj, Item.class);
             return item;
-        } catch (IOException | ParseException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }

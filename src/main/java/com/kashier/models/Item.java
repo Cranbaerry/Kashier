@@ -1,22 +1,28 @@
 package com.kashier.models;
 
 import com.kashier.interfaces.IItem;
-import org.json.simple.JSONObject;
 
 public class Item implements IItem {
     String name;
     double price;
     String qr;
 
-    String deleted_at;
+    String deleted_at = null;
 
-    public Item(JSONObject obj) {
-        this.qr = obj.get("qr").toString();
-        this.name = obj.get("name").toString();
-        this.price = Double.parseDouble(obj.get("price").toString());
+    public void setName(String name) {
+        this.name = name;
+    }
 
-        if (obj.get("deleted_at") != null)
-            this.deleted_at = obj.get("deleted_at").toString();
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setQR(String qr) {
+        this.qr = qr;
+    }
+
+    public void setDeletedAt(String deleted_at) {
+        this.deleted_at = deleted_at;
     }
 
     public String getQR() {
@@ -33,13 +39,5 @@ public class Item implements IItem {
 
     public double getPrice() {
         return this.price;
-    }
-
-    public JSONObject toJSON() {
-        JSONObject obj = new JSONObject();
-        obj.put("qr", this.qr);
-        obj.put("name", this.name);
-        obj.put("price", this.price);
-        return obj;
     }
 }

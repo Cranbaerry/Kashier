@@ -1,27 +1,82 @@
 package com.kashier.controllers;
 
-import com.kashier.models.InventoryItem;
-import com.kashier.models.InvoiceItem;
-import com.kashier.models.Item;
-import org.json.simple.JSONObject;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.harium.postgrest.Condition;
+import com.kashier.models.*;
+
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import static com.kashier.App.supabase;
 
 public class InvoiceController {
-    private HashMap<String, InvoiceItem> items = new HashMap<String, InvoiceItem>();
 
-    public Double getTotal() {
-        double total = 0;
-        for (InvoiceItem item : this.items.values()) {
-            System.out.println(item.getPrice());
-            total += item.getPrice() * item.getQuantity();
+    public ArrayList<Invoice> getInvoices() throws IOException {
+        String result = supabase.database().findAll("invoices");
+        JsonArray data = (JsonArray) JsonParser.parseString(result).getAsJsonArray();
+        ArrayList<Invoice> invoices = new ArrayList<Invoice>();
+        for (int i = 0; i < data.size(); i++) {
+            Invoice invoice = new Gson().fromJson(data.get(i).getAsJsonObject(), Invoice.class);
+            String invoiceItemsRes = supabase.database().find("invoice_items", Condition.and(
+                Condition.eq("invoice_id", invoice.getId())
+            ));
+
+            JsonArray arrResult = JsonParser.parseString(invoiceItemsRes).getAsJsonArray();
+            ArrayList<InvoiceItem> items = getInvoiceItems(arrResult);
+            invoices.add(invoice);
         }
 
-        return total;
+        return invoices;
     }
 
-    public void addItem(InvoiceItem item) {
-        this.items.put(item.getQR(), item);
+    public Invoice getInvoice(String id) throws IOException {
+        String result = supabase.database().find("invoices", Condition.and(
+            Condition.eq("id", id)
+        ));
+        JsonArray arrResult = JsonParser.parseString(result).getAsJsonArray();
+        if (arrResult.size() < 1)  return null;
+        JsonObject jsonObj = arrResult.get(0).getAsJsonObject();
+        Invoice invoice = new Gson().fromJson(jsonObj, Invoice.class);
+
+        result = supabase.database().find("invoice_items", Condition.and(
+            Condition.eq("invoice_id", id)
+        ));
+
+        arrResult = JsonParser.parseString(result).getAsJsonArray();
+        ArrayList<InvoiceItem> items = getInvoiceItems(arrResult);
+        invoice.setItems(items);
+        return invoice;
+    }
+
+    public ArrayList<InvoiceItem> getInvoiceItems(JsonArray arrResult) throws IOException {
+        ArrayList<InvoiceItem> items = new ArrayList<InvoiceItem>();
+        for (int i = 0; i < arrResult.size(); i++) {
+            System.out.println(arrResult.size());
+            JsonObject jsonObj = arrResult.get(i).getAsJsonObject();
+            InvoiceItem item = new Gson().fromJson(jsonObj, InvoiceItem.class);
+
+            String itemResult = supabase.database().find("items", Condition.and(
+                Condition.eq("qr", item.getQR())
+            ));
+
+            JsonArray arrItemResult = JsonParser.parseString(itemResult).getAsJsonArray();
+            if (arrItemResult.size() < 1)  {
+                System.out.println("Item not found in database");
+                continue;
+            }
+
+            JsonObject detail = arrItemResult.get(0).getAsJsonObject();
+            item.setName(detail.get("name").getAsString());
+            item.setQR(detail.get("qr").getAsString());
+            item.setPrice(detail.get("price").getAsFloat());
+            System.out.println("Item found: " + item.getName());
+            items.add(item);
+        }
+
+        return items;
     }
 }

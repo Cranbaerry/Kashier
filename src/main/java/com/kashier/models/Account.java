@@ -1,21 +1,12 @@
 package com.kashier.models;
 
-import com.kashier.interfaces.IAccount;
-import org.json.simple.JSONObject;
 
-public class Account implements IAccount {
+public class Account {
     private String id, username, password;
     private Integer roleId;
 
-    public void setData(JSONObject obj) {
-        this.id = obj.get("id").toString();
-        this.username = obj.get("username").toString();
-        this.password = obj.get("password").toString();
-        this.roleId = Integer.parseInt(obj.get("roleId").toString());
-    }
-
-    public String getUuid() {
-        return username;
+    public String getId() {
+        return id;
     }
 
     public String getUsername() {
@@ -30,3 +21,4 @@ public class Account implements IAccount {
         return roleId;
     }
 }
+
