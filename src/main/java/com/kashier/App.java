@@ -25,10 +25,8 @@ public class App extends Application {
     private static Scene scene;
     private static final String SUPABASE_URL = "https://xgswsvlpfuhdaqrywzhf.supabase.co";
     private static final String SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhnc3dzdmxwZnVoZGFxcnl3emhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODU1MTk1MzYsImV4cCI6MjAwMTA5NTUzNn0.64nZasGodkopk4TF0uSU95s4uwvAGavsYbjL9P2Bkh4";
-
     public static final String DYNAMSOFT_LICENSE = "t0073oQAAADu5LbghXCWDSmoiWEKJB/NXefhMH+urpIkKJl/9LHGsOHyqDrGZ0TIs1EjH78dz1PYE2K+3nWoWCWtaT0ibDc8FBWwjCQ==";
     public static SupabaseClient supabase;
-
     public static Account account;
 
     @Override

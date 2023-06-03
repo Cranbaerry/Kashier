@@ -3,7 +3,7 @@ package com.kashier.interfaces;
 
 public interface IItem {
 
-    public String getQR();
+    public String getQr();
 
     public String getName();
 

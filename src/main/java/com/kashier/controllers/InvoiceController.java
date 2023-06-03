@@ -60,7 +60,7 @@ public class InvoiceController {
             InvoiceItem item = new Gson().fromJson(jsonObj, InvoiceItem.class);
 
             String itemResult = supabase.database().find("items", Condition.and(
-                Condition.eq("qr", item.getQR())
+                Condition.eq("qr", item.getQr())
             ));
 
             JsonArray arrItemResult = JsonParser.parseString(itemResult).getAsJsonArray();
@@ -71,7 +71,7 @@ public class InvoiceController {
 
             JsonObject detail = arrItemResult.get(0).getAsJsonObject();
             item.setName(detail.get("name").getAsString());
-            item.setQR(detail.get("qr").getAsString());
+            item.setQr(detail.get("qr").getAsString());
             item.setPrice(detail.get("price").getAsFloat());
             System.out.println("Item found: " + item.getName());
             items.add(item);

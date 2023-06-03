@@ -4,9 +4,8 @@ import com.kashier.interfaces.IItem;
 
 public class Item implements IItem {
     String name;
-    double price;
+    Double price;
     String qr;
-
     String deleted_at = null;
 
     public void setName(String name) {
@@ -17,7 +16,7 @@ public class Item implements IItem {
         this.price = price;
     }
 
-    public void setQR(String qr) {
+    public void setQr(String qr) {
         this.qr = qr;
     }
 
@@ -25,7 +24,7 @@ public class Item implements IItem {
         this.deleted_at = deleted_at;
     }
 
-    public String getQR() {
+    public String getQr() {
         return this.qr;
     }
 

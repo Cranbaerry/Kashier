@@ -18,7 +18,7 @@ public class ItemController {
     public Item upsertItem(Item itemObj) {
         try {
             Insert.Row data = Insert.row()
-                .column("qr", itemObj.getQR())
+                .column("qr", itemObj.getQr())
                 .column("name", itemObj.getName())
                 .column("price", itemObj.getPrice());
             supabase.database().save("items", data);
