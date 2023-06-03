@@ -2,16 +2,16 @@ package com.kashier.interfaces;
 
 public interface IInvoiceItem extends IItem  {
 
-    public String getInvoiceId();
+    String getInvoiceId();
 
-    public int getQuantity();
+    int getQuantity();
 
-    public float getSubtotal();
+    float getSubtotal();
 
-    public void setInvoiceId(String invoice_id);
+    void setInvoiceId(String invoice_id);
 
-    public void setQuantity(int quantity);
+    void setQuantity(int quantity);
 
-    public void setSubtotal(float subtotal);
+    void setSubtotal(float subtotal);
 
 }
