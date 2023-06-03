@@ -7,6 +7,12 @@ import com.google.gson.JsonParser;
 import com.harium.postgrest.Condition;
 import com.harium.postgrest.Insert;
 import com.kashier.models.Item;
+import javafx.fxml.FXML;
+import javafx.scene.image.ImageView;
+import javafx.scene.control.Label;
+import javafx.scene.text.Text;
+
+import java.awt.*;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -14,7 +20,26 @@ import java.util.ArrayList;
 import static com.kashier.App.supabase;
 
 
-public class ItemController {
+public class ItemController extends PageController {
+    @FXML
+    private Text itemName;
+    @FXML
+    private Text price;
+    @FXML
+    private ImageView img;
+    private Item item;
+    @FXML
+    private void onItemClick() {
+        System.out.println("Item clicked!");
+    }
+
+    public void setData(Item item) {
+        this.item = item;
+        this.itemName.setText(item.getName());
+        this.price.setText("$" + item.getPrice());
+        //Image image = new Image(this.getClass().getResourceAsStream(fruit.getImgSrc()));
+        //this.img.setImage(image);
+    }
     public Item upsertItem(Item itemObj) {
         try {
             Insert.Row data = Insert.row()

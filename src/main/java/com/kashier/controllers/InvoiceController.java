@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.harium.postgrest.Condition;
 import com.kashier.models.*;
+import javafx.fxml.FXML;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,4 +80,6 @@ public class InvoiceController {
 
         return items;
     }
+
+
 }
