@@ -16,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import com.harium.supabase.SupabaseClient;
 import com.dynamsoft.dbr.*;
+import javafx.stage.StageStyle;
 
 /**
  * JavaFX App
@@ -28,10 +29,15 @@ public class App extends Application {
     public static final String DYNAMSOFT_LICENSE = "t0073oQAAADu5LbghXCWDSmoiWEKJB/NXefhMH+urpIkKJl/9LHGsOHyqDrGZ0TIs1EjH78dz1PYE2K+3nWoWCWtaT0ibDc8FBWwjCQ==";
     public static SupabaseClient supabase;
 
+    public static Account account;
+
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("secondary"), 640, 480);
+        scene = new Scene(loadFXML("auth"));
         stage.setScene(scene);
+        stage.setResizable(false);
+        stage.setTitle("Kashier Demo");
+        stage.initStyle(StageStyle.DECORATED.UNDECORATED);
         stage.show();
     }
 
@@ -45,10 +51,9 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        launch();
         try {
-//            supabase = new SupabaseClient(SUPABASE_URL, SUPABASE_KEY);
-//
+            supabase = new SupabaseClient(SUPABASE_URL, SUPABASE_KEY);
+            launch();
 //            // Auth controller test: Login
 //            AuthController auth = new AuthController();
 //            boolean login = auth.login("uwu", "uwu");
