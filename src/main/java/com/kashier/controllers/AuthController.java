@@ -4,17 +4,21 @@ import com.google.gson.*;
 import com.harium.postgrest.Condition;
 import com.kashier.App;
 import com.kashier.models.Account;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 import static com.kashier.App.supabase;
 
-public class AuthController {
+public class AuthController implements Initializable {
     private Account account;
 
     @FXML private Text errorText;
@@ -41,22 +45,39 @@ public class AuthController {
     }
 
     @FXML
-    private void onLoginClick() throws IOException {
+    private void onLoginClick() {
         loginBtn.setDisable(true);
-        boolean status = login(username.getText(), password.getText());
-        if (status) {
-            App.account = getAccount();
-            App.setRoot("primary");
-        } else {
-            errorText.setText("Invalid credentials!");
-        }
-
-        loginBtn.setDisable(false);
+        new Thread(){
+            @Override
+            public void run(){
+                try {
+                    boolean status = login(username.getText(), password.getText());
+                    if (status) {
+                        App.account = getAccount();
+                        App.setRoot("home");
+                        System.out.println("Login successful!");
+                    } else {
+                        errorText.setText("Invalid credentials!");
+                        System.out.println("Login failed!");
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                Platform.runLater(() -> {
+                    loginBtn.setDisable(false);
+                });
+            }
+        }.start();
     }
 
     @FXML
     private void onExitClick() {
         System.exit(0);
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        App.setSize(615, 400);
     }
 }
 

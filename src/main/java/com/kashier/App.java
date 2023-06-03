@@ -42,7 +42,14 @@ public class App extends Application {
     }
 
     public static void setRoot(String fxml) throws IOException {
+        if (scene == null) return;
         scene.setRoot(loadFXML(fxml));
+    }
+
+    public static void setSize(int width, int height) {
+        if (scene == null) return;
+        scene.getWindow().setWidth(width);
+        scene.getWindow().setHeight(height);
     }
 
     public static Parent loadFXML(String fxml) throws IOException {

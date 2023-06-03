@@ -64,6 +64,20 @@
             <artifactId>vlcj-javafx</artifactId>
             <version>1.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>fontawesomefx-fontawesome</groupId>
+            <artifactId>fontawesomefx-fontawesome</artifactId>
+            <version>4.7.0-9.1.2</version>
+            <systemPath>${project.basedir}/lib/fontawesomefx-fontawesome-4.7.0-9.1.2.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
+        <dependency>
+            <groupId>fontawesomefx-commons</groupId>
+            <artifactId>fontawesomefx-commons</artifactId>
+            <version>9.1.2</version>
+            <systemPath>${project.basedir}/lib/fontawesomefx-commons-9.1.2.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kashier.controllers.HomeController">
+   <left>
+      <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="168.0" style="-fx-background-color: #0598ff; -fx-border-color: #fff; -fx-border-width: 0px 3px 0px 0px;" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" prefHeight="160.0" prefWidth="152.0">
+               <children>
+                  <FontAwesomeIconView fill="WHITE" glyphName="DASHCUBE" size="100">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </FontAwesomeIconView>
+                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Kashier">
+                     <font>
+                        <Font name="Berlin Sans FB Bold" size="32.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Text>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+            </VBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="155.0">
+               <children>
+                  <FontAwesomeIconView fill="WHITE" glyphName="HOME" onMouseClicked="#onHomeClick" size="20" />
+                  <Label fx:id="homeBtn" onMouseClicked="#onHomeClick" prefHeight="17.0" prefWidth="123.0" text="Dashboard" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets left="15.0" right="15.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="175.0">
+               <children>
+                  <FontAwesomeIconView fill="WHITE" glyphName="ARCHIVE" size="20" />
+                  <Label fx:id="inventoryBtn" onMouseClicked="#onInventoryClick" prefHeight="17.0" prefWidth="123.0" text="Inventory" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="15.0" right="15.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="155.0">
+               <children>
+                  <FontAwesomeIconView fill="WHITE" glyphName="SHOPPING_CART" size="20" />
+                  <Label fx:id="checkOutBtn" onMouseClicked="#onCheckOutClick" prefHeight="17.0" prefWidth="123.0" text="Check Out" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="15.0" right="15.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="155.0">
+               <children>
+                  <FontAwesomeIconView fill="WHITE" glyphName="SIGN_OUT" size="20" />
+                  <Label fx:id="signOffBtn" onMouseClicked="#onSignOffClick" prefHeight="17.0" prefWidth="123.0" text="Sign Off" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets left="15.0" right="15.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+   </left>
+   <right>
+      <AnchorPane prefHeight="500.0" prefWidth="737.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text fx:id="pageTitle" fill="#0598ff" layoutX="17.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Home">
+               <font>
+                  <Font name="System Bold" size="21.0" />
+               </font></Text>
+            <FontAwesomeIconView fill="#0598ff" glyphName="CLOSE" layoutX="695.0" layoutY="33.0" onMouseClicked="#onExitClick" size="20" />
+         </children>
+      </AnchorPane>
+   </right>
+</BorderPane>

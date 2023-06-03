@@ -15,7 +15,7 @@ import java.util.HashMap;
 import static com.kashier.App.supabase;
 
 
-public class InventoryController {
+public class InventoryController extends PageController {
     private HashMap<String, InventoryItem> inventory;
 
     public InventoryController() throws  IOException {
