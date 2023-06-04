@@ -2,6 +2,9 @@
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -12,7 +15,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -103,165 +105,91 @@
       </VBox>
    </left>
    <center>
-      <AnchorPane prefHeight="500.0" prefWidth="737.0" BorderPane.alignment="CENTER">
+      <AnchorPane focusTraversable="true" prefHeight="500.0" prefWidth="737.0" BorderPane.alignment="CENTER">
          <children>
-            <Text fx:id="pageTitle" fill="#0598ff" layoutX="17.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Home">
+            <Text fx:id="pageTitle" fill="#0598ff" layoutX="17.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dashboard">
                <font>
                   <Font name="System Bold" size="21.0" />
                </font>
             </Text>
             <FontAwesomeIconView fill="#0598ff" glyphName="CLOSE" layoutX="695.0" layoutY="33.0" onMouseClicked="#onExitClick" size="20" />
-            <HBox layoutX="18.0" layoutY="101.0" prefHeight="114.0" prefWidth="700.0" spacing="45.0" style="-fx-border-radius: 30;" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="14.0">
+            <HBox layoutX="16.0" layoutY="55.0" prefHeight="114.0" prefWidth="700.0" spacing="15.0" style="-fx-border-radius: 30;" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0">
                <children>
-                  <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white; -fx-border-color: #0598ff; -fx-background-radius: 10; -fx-border-radius: 10;">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin>
+                  <Pane prefHeight="104.0" prefWidth="231.0" style="-fx-effect: dropShadow(three-pass-box,rgba(0,0,0,0.1), 10.0 , 0.0 , 0.0 ,10.0); -fx-background-color: #fff; -fx-border-color: #0598ff; -fx-border-width: 0px 0px 0px 3px;">
                      <children>
-                        <Text fill="#0598ff" layoutX="44.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Total Product(s)" wrappingWidth="145.33672714233398">
+                        <Text fill="#0598ff" layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Monthly Earnings" wrappingWidth="145.33672714233398">
                            <font>
                               <Font size="17.0" />
                            </font>
                         </Text>
-                        <Text fill="#0598ff" layoutX="9.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3" textAlignment="RIGHT" wrappingWidth="177.5453188419342">
+                        <Text fx:id="earningText" fill="#0598ff" layoutX="14.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" wrappingWidth="177.5453188419342">
                            <font>
-                              <Font size="37.0" />
+                              <Font name="System Bold" size="37.0" />
                            </font>
                         </Text>
-                        <FontAwesomeIconView fill="#0598ff" glyphName="ARCHIVE" layoutX="14.0" layoutY="31.0" selectionFill="#0598ff" size="24" text="" />
+                        <FontAwesomeIconView fill="#0598ff" glyphName="DOLLAR" layoutX="199.0" layoutY="32.0" selectionStart="1" size="24" />
                      </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
                   </Pane>
-                  <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white; -fx-border-color: #0598ff; -fx-background-radius: 10; -fx-border-radius: 10;">
+                  <Pane prefHeight="104.0" prefWidth="231.0" style="-fx-effect: dropShadow(three-pass-box,rgba(0,0,0,0.1), 10.0 , 0.0 , 0.0 ,10.0); -fx-background-color: #fff; -fx-border-color: #0598ff; -fx-border-width: 0px 0px 0px 3px;">
                      <children>
-                        <Text fill="#0598ff" layoutX="33.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Avg. Price" wrappingWidth="145.33672714233398">
+                        <Text fill="#0598ff" layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Daily Sales" wrappingWidth="145.33672714233398">
                            <font>
                               <Font size="17.0" />
                            </font>
                         </Text>
-                        <Text fill="#0598ff" layoutX="9.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="46.34" textAlignment="RIGHT" wrappingWidth="177.5453188419342">
+                        <Text fx:id="salesText" fill="#0598ff" layoutX="14.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" wrappingWidth="177.5453188419342">
                            <font>
-                              <Font size="37.0" />
+                              <Font name="System Bold" size="37.0" />
                            </font>
                         </Text>
-                        <FontAwesomeIconView fill="#0598ff" glyphName="DOLLAR" layoutX="13.0" layoutY="29.0" size="24" />
+                        <FontAwesomeIconView fill="#0598ff" glyphName="THUMBS_UP" layoutX="191.0" layoutY="31.0" size="24" />
                      </children>
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
                   </Pane>
-                  <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white; -fx-border-color: #0598ff; -fx-background-radius: 10; -fx-border-radius: 10;">
+                  <Pane prefHeight="104.0" prefWidth="231.0" style="-fx-effect: dropShadow(three-pass-box,rgba(0,0,0,0.1), 10.0 , 0.0 , 0.0 ,10.0); -fx-background-color: #fff; -fx-border-color: #0598ff; -fx-border-width: 0px 0px 0px 3px;">
                      <children>
-                        <Text fill="#0598ff" layoutX="44.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Best Seller" wrappingWidth="145.33672714233398">
+                        <Text fill="#0598ff" layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Total Products" wrappingWidth="145.33672714233398">
                            <font>
                               <Font size="17.0" />
                            </font>
                         </Text>
-                        <Text fill="#0598ff" layoutX="9.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Test UwU" textAlignment="RIGHT" wrappingWidth="177.5453188419342">
+                        <Text fx:id="productsText" fill="#0598ff" layoutX="14.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" wrappingWidth="177.5453188419342">
                            <font>
-                              <Font size="37.0" />
+                              <Font name="System Bold" size="37.0" />
                            </font>
                         </Text>
-                        <FontAwesomeIconView fill="#0598ff" glyphName="TROPHY" layoutX="14.0" layoutY="29.0" size="24" />
+                        <FontAwesomeIconView fill="#0598ff" glyphName="ARCHIVE" layoutX="188.0" layoutY="34.0" size="24" text="" />
                      </children>
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
                   </Pane>
                </children>
             </HBox>
-            <Text layoutX="28.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Inventory">
+            <Text fill="#0598ff" layoutX="17.0" layoutY="214.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Latest transactions" wrappingWidth="224.33672714233398">
                <font>
-                  <Font size="22.0" />
+                  <Font size="17.0" />
                </font>
             </Text>
-            <Line endX="85.4000244140625" endY="7.62939453125E-6" layoutX="42.0" layoutY="91.0" startX="-15.333343505859375" startY="7.62939453125E-6" />
-            <Text layoutX="31.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Transaction">
-               <font>
-                  <Font size="22.0" />
-               </font>
-            </Text>
-            <Pane layoutX="24.0" layoutY="267.0" prefHeight="199.0" prefWidth="347.0" style="-fx-border-radius: 10; -fx-border-color: #0598ff;">
-               <children>
-                  <HBox layoutX="3.0" layoutY="8.0" prefHeight="192.0" prefWidth="331.0">
-                     <children>
-                        <VBox prefHeight="206.0" prefWidth="26.0" spacing="18.0">
-                           <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Avg. subtotal" wrappingWidth="162.0523681640625">
-                                 <font>
-                                    <Font size="20.0" />
-                                 </font>
-                              </Text>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total Invoice" wrappingWidth="162.05230712890625">
-                                 <font>
-                                    <Font size="20.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets />
-                                 </VBox.margin>
-                              </Text>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Avg. Items Bought" wrappingWidth="167.65234375">
-                                 <font>
-                                    <Font size="20.0" />
-                                 </font>
-                              </Text>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Avg. fee (%)" wrappingWidth="162.85235595703125">
-                                 <font>
-                                    <Font size="22.0" />
-                                 </font>
-                              </Text>
-                           </children>
-                           <HBox.margin>
-                              <Insets left="5.0" />
-                           </HBox.margin>
-                        </VBox>
-                        <VBox prefHeight="192.0" prefWidth="119.0" spacing="18.0">
-                           <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="6969" textAlignment="RIGHT" wrappingWidth="162.0523681640625">
-                                 <font>
-                                    <Font size="20.0" />
-                                 </font>
-                              </Text>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="1" textAlignment="RIGHT" wrappingWidth="162.05230712890625">
-                                 <font>
-                                    <Font size="20.0" />
-                                 </font>
-                              </Text>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="1" textAlignment="RIGHT" wrappingWidth="162.85235595703125">
-                                 <font>
-                                    <Font size="20.0" />
-                                 </font>
-                              </Text>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="100%" textAlignment="RIGHT" wrappingWidth="162.85235595703125">
-                                 <font>
-                                    <Font size="20.0" />
-                                 </font>
-                              </Text>
-                           </children>
-                           <HBox.margin>
-                              <Insets right="5.0" />
-                           </HBox.margin>
-                        </VBox>
-                     </children>
-                  </HBox>
-               </children>
-            </Pane>
-            <Text layoutX="381.0" layoutY="259.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="History">
-               <font>
-                  <Font size="22.0" />
-               </font>
-            </Text>
-            <Pane layoutX="371.0" layoutY="267.0" prefHeight="199.0" prefWidth="338.0">
-               <children>
-                  <TableView layoutX="5.0" prefHeight="200.0" prefWidth="339.0" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #0598ff;">
-                    <columns>
-                      <TableColumn prefWidth="114.13336181640625" text="id" />
-                      <TableColumn prefWidth="74.666748046875" text="total" />
-                        <TableColumn prefWidth="69.3333740234375" text="fee" />
-                        <TableColumn prefWidth="75.46661376953125" text="discount" />
-                    </columns>
-                  </TableView>
-               </children>
-            </Pane>
+            <LineChart layoutX="394.0" layoutY="226.0" prefHeight="271.0" prefWidth="323.0" style="-fx-background-color: #fff;">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </LineChart>
+            <TableView layoutX="16.0" layoutY="236.0" prefHeight="238.0" prefWidth="379.0">
+              <columns>
+                <TableColumn prefWidth="256.0" text="Invoice" />
+                <TableColumn prefWidth="122.0" text="Total" />
+              </columns>
+            </TableView>
          </children>
       </AnchorPane>
    </center>
