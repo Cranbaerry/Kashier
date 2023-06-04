@@ -80,6 +80,4 @@ public class InvoiceController {
 
         return items;
     }
-
-
 }

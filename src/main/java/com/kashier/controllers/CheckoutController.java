@@ -292,76 +292,91 @@ public class CheckoutController extends PageController  {
 
     @FXML
     private void onGenerateInvoiceClick() {
-        try {
-            errorText.setText("");
-            String invoiceId = UUID.randomUUID().toString();
-            Invoice invoice = new Invoice();
-            invoice.setId(invoiceId);
-            invoice.setDiscount(0);
-            invoice.setFee(this.tax);
-            invoice.setSubtotal(this.subtotal);
-            invoice.setTotal(this.total);
-            invoice.setIssuedBy(App.account.getId());
+        new Thread(){
+            @Override
+            public void run(){
+            try {
+                if (invoiceItems.size() == 0) {
+                    errorText.setText("Cart is empty");
+                    return;
+                }
 
-            Insert.Row data = Insert.row()
-                .column("id", invoice.getId())
-                .column("discount", invoice.getDiscount())
-                .column("fee", invoice.getFee())
-                .column("subtotal", invoice.getSubtotal())
-                .column("total", invoice.getTotal())
-                .column("issued_by", invoice.getIssuedBy());
+                chargeButton.setDisable(true);
+                errorText.setText("");
+                String invoiceId = UUID.randomUUID().toString();
+                Invoice invoice = new Invoice();
+                invoice.setId(invoiceId);
+                invoice.setDiscount(0);
+                invoice.setFee(tax);
+                invoice.setSubtotal(subtotal);
+                invoice.setTotal(total);
+                invoice.setIssuedBy(App.account.getId());
 
-            supabase.database().save("invoices", data);
+                Insert.Row data = Insert.row()
+                    .column("id", invoice.getId())
+                    .column("discount", invoice.getDiscount())
+                    .column("fee", invoice.getFee())
+                    .column("subtotal", invoice.getSubtotal())
+                    .column("total", invoice.getTotal())
+                    .column("issued_by", invoice.getIssuedBy());
 
+                supabase.database().save("invoices", data);
 
-
-            for (InvoiceItem item : invoiceItems) {
-                // save invoice item
-                Insert.Row invoiceItemData = Insert.row()
+                for (InvoiceItem item : invoiceItems) {
+                    // save invoice item
+                    Insert.Row invoiceItemData = Insert.row()
                         .column("invoice_id", invoice.getId())
                         .column("qr", item.getQr())
                         .column("price", item.getPrice())
                         .column("quantity", item.getQuantity())
                         .column("subtotal", item.getSubtotal());
 
-                String result = supabase.database().save("invoice_items", invoiceItemData);
-                System.out.println("Saved invoice item: " + item.getQr());
-                System.out.println("Result: " + result);
+                    String result = supabase.database().save("invoice_items", invoiceItemData);
+                    System.out.println("Saved invoice item: " + item.getQr());
+                    System.out.println("Result: " + result);
 
-                // Get current stock
-                result = supabase.database().find("inventory", Condition.and(Condition.eq("qr", item.getQr())));
-                JsonArray resultArray = JsonParser.parseString(result).getAsJsonArray();
-                int currentStock = 0;
-                if (resultArray.size() == 0) {
-                    System.out.println("Item is out of stock: " + item.getQr());
-                } else {
-                    JsonObject resultObject = resultArray.get(0).getAsJsonObject();
-                    currentStock = resultObject.get("stock").getAsInt();
-                }
+                    // Get current stock
+                    result = supabase.database().find("inventory", Condition.and(Condition.eq("qr", item.getQr())));
+                    JsonArray resultArray = JsonParser.parseString(result).getAsJsonArray();
+                    int currentStock = 0;
+                    if (resultArray.size() == 0) {
+                        System.out.println("Item is out of stock: " + item.getQr());
+                    } else {
+                        JsonObject resultObject = resultArray.get(0).getAsJsonObject();
+                        currentStock = resultObject.get("stock").getAsInt();
+                    }
 
-                // update stock
-                Insert.Row stockData = Insert.row()
+                    // update stock
+                    Insert.Row stockData = Insert.row()
                         .column("qr", item.getQr())
                         .column("stock", currentStock - item.getQuantity());
 
-                result = supabase.database().save("inventory", stockData);
-                System.out.println("Saved invoice item: " + item.getQr());
-                System.out.println("Result: " + result);
+                    result = supabase.database().save("inventory", stockData);
+                    System.out.println("Saved invoice item: " + item.getQr());
+                    System.out.println("Result: " + result);
+
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.initStyle(StageStyle.UTILITY);
+                        alert.setTitle("New Invoice");
+                        alert.setHeaderText("A new invoice has been successfully generated.");
+                        alert.setContentText("Invoice ID: " + invoice.getId() + "\n" +
+                                "Subtotal: " + subtotalText.getText() + "\n" +
+                                "Tax: " + taxText.getText() + "\n" +
+                                "Total: " + totalText.getText());
+
+                        alert.showAndWait();
+                    });
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                Platform.runLater(() -> {
+                    chargeButton.setDisable(false);
+                });
             }
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.initStyle(StageStyle.UTILITY);
-            alert.setTitle("New Invoice");
-            alert.setHeaderText("A new invoice has been successfully generated.");
-            alert.setContentText("Invoice ID: " + invoice.getId() + "\n" +
-                    "Subtotal: " + subtotalText.getText() + "\n" +
-                    "Tax: " + taxText.getText() + "\n" +
-                    "Total: " + totalText.getText());
-
-            Optional<ButtonType> result = alert.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            }
+        }.start();
     }
 }
 
