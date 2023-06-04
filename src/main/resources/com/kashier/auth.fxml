@@ -16,7 +16,7 @@
          <children>
             <ImageView fitHeight="201.0" fitWidth="203.0" layoutX="53.0" layoutY="100.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="src/main/resources/com/kashier/img/logo.png" />
+                  <Image url="@img/logo.png" />
                </image>
             </ImageView>
          </children>

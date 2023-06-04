@@ -31,7 +31,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("checkout"));
+        scene = new Scene(loadFXML("auth"));
         stage.setScene(scene);
         stage.setResizable(false);
         stage.setTitle("Kashier Demo");
@@ -146,69 +146,6 @@ public class App extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        //Scanner sc = new Scanner(System.in);
-//        String user;
-//        String pass;
-//        int flag = 0;
-//
-//        ArrayList<Account> accounts = new ArrayList<Account>();
-//        Account temp1 = new Account("admin1", "password1", 1);
-//        accounts.add(temp1);
-//        Account temp2 = new Account("admin2", "password2", 1);
-//        accounts.add(temp2);
-//        Account temp3 = new Account("admin3", "password3", 1);
-//        accounts.add(temp3);
-//
-//        do {
-//            System.out.println("Welcome to Kashier! Please input your credentials to proceed.");
-//            System.out.printf("Enter username: ");
-//            user = sc.nextLine();
-//            System.out.printf("Enter password: ");
-//            pass = sc.nextLine();
-//
-//            for (int i = 0; i < accounts.size(); i++) {
-//                if (accounts.get(i).getUser().contains(user) && accounts.get(i).getPass().contains(pass)) {
-//                    flag++;
-//                }
-//            }
-//
-//            if (flag == 0) {
-//                System.out.println("Wrong username or password!");
-//            }
-//        } while (flag == 0);
-//        System.out.println("Log In Sucessful!");
-
-//		int choice;
-//		int selection;
-//		do {
-//			System.out.println("Pick Your Role:");
-//			System.out.println("1. Cashier");
-//			System.out.println("2. Back Office");
-//
-//			choice = sc.nextInt();
-//			if(choice == 1) {
-//				Cashier c = new Cashier(inventory);
-//				System.out.println("Pick action:");
-//				System.out.println("1. Create Order");
-//				System.out.println("2. Add Item");
-//				System.out.println("3. Check Out");
-//				selection = sc.nextInt();
-//				c.Initiate(selection, sc);
-//			} else if(choice == 2) {
-//				BackOffice b = new BackOffice(inventory);
-//				System.out.println("Pick action:");
-//				System.out.printl`n("1. Search Item");
-//				System.out.println("2. Add Item");
-//				System.out.println("3. Update Item");
-//				System.out.println("4. Remove Item");
-//				selection = sc.nextInt();
-//				b.Initiate(selection, sc);
-//			}
-//		} while(choice != 1 || choice != 2);
-//
-//
     }
 }
 

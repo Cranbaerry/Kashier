@@ -21,10 +21,192 @@
 <?import javafx.scene.text.Text?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kashier.controllers.CheckoutController">
+   <center>
+      <AnchorPane prefHeight="500.0" prefWidth="737.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text fx:id="pageTitle" fill="#0598ff" layoutX="17.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Checkout">
+               <font>
+                  <Font name="System Bold" size="21.0" />
+               </font></Text>
+            <FontAwesomeIconView fill="#0598ff" glyphName="CLOSE" layoutX="695.0" layoutY="33.0" onMouseClicked="#onExitClick" size="20" />
+            <TextField fx:id="searchInput" layoutX="425.0" layoutY="13.0" prefHeight="26.0" prefWidth="259.0" promptText="Search" style="-fx-border-width: 0px 0px 0px 0px; -fx-border-color: #0598FF;" />
+            <FontAwesomeIconView fill="#0598ff" glyphName="SEARCH" layoutX="401.0" layoutY="31.0" size="15" text="" />
+            <TableView fx:id="invoiceTable" layoutX="461.0" layoutY="103.0" prefHeight="230.0" prefWidth="251.0">
+              <columns>
+                  <TableColumn fx:id="qrColumn" prefWidth="83.0" text="QR" visible="false" />
+                <TableColumn fx:id="nameColumn" prefWidth="63.0" text="Item" />
+                <TableColumn fx:id="quantityColumn" prefWidth="41.0" text="Qty" />
+                  <TableColumn fx:id="priceColumn" prefWidth="65.0" text="Price" />
+                  <TableColumn fx:id="subTotalColumn" prefWidth="81.0" text="Subtotal" />
+              </columns>
+            </TableView>
+            <VBox alignment="CENTER" layoutX="462.0" layoutY="346.0" prefHeight="129.0" prefWidth="252.0">
+               <children>
+                  <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="252.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Subtotal" wrappingWidth="99.115234375">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="subtotalText" strokeType="OUTSIDE" strokeWidth="0.0" text="Rp. 0" textAlignment="RIGHT" wrappingWidth="124.46484375" />
+                     </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+                  </HBox>
+                  <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="252.0" style="-fx-border-width: 1px; -fx-border-color: #000; -fx-border-width: 0 0 1px 0;">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="PPN 10%" wrappingWidth="99.115234375">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="taxText" strokeType="OUTSIDE" strokeWidth="0.0" text="Rp. 0" textAlignment="RIGHT" wrappingWidth="124.46484375" />
+                     </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+                  </HBox>
+                  <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="252.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total" wrappingWidth="99.115234375">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="totalText" strokeType="OUTSIDE" strokeWidth="0.0" text="Rp. 0" textAlignment="RIGHT" wrappingWidth="124.46484375">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <padding>
+                        <Insets left="10.0" right="10.0" />
+                     </padding>
+                  </HBox>
+                  <Button fx:id="chargeButton" mnemonicParsing="false" onAction="#onGenerateInvoiceClick" prefHeight="35.0" prefWidth="242.0" style="-fx-background-color: #0598ff;" text="Generate Invoice" textFill="WHITE">
+                     <VBox.margin>
+                        <Insets top="8.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+            <Button fx:id="scanButton" layoutX="462.0" layoutY="60.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #5c636a;" text="Scan Barcode" textFill="WHITE" />
+            <VBox layoutX="17.0" layoutY="49.0" prefHeight="284.0" prefWidth="436.0">
+               <children>
+      <!--            <HBox alignment="CENTER" layoutX="9.0" layoutY="50.0" prefHeight="431.0" prefWidth="444.0" VBox.vgrow="ALWAYS">-->
+      <!--               <children>-->
+      <!--                  <ScrollPane fx:id="scroll" prefHeight="409.0" prefWidth="444.0" styleClass="transparent">-->
+      <!--                     <HBox.margin>-->
+      <!--                        <Insets top="10.0" />-->
+      <!--                     </HBox.margin>-->
+      <!--                     <content>-->
+      <!--                        <GridPane fx:id="grid">-->
+      <!--                          <rowConstraints>-->
+      <!--                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />-->
+      <!--                          </rowConstraints>-->
+      <!--                           <padding>-->
+      <!--                              <Insets left="10.0" />-->
+      <!--                           </padding>-->
+      <!--                        </GridPane>-->
+      <!--                     </content>-->
+      <!--                  </ScrollPane>-->
+      <!--               </children>-->
+      <!--            </HBox>-->
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <ScrollPane fx:id="scroll" prefHeight="267.0" prefWidth="436.0" styleClass="transparent">
+                           <content>
+                              <GridPane fx:id="grid" alignment="CENTER" prefHeight="0.0" prefWidth="0.0">
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="150.0" />
+                                 </rowConstraints>
+                              </GridPane>
+                           </content>
+                           <HBox.margin>
+                              <Insets top="10.0" />
+                           </HBox.margin>
+                        </ScrollPane>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <Button fx:id="resetButton" layoutX="588.0" layoutY="60.0" mnemonicParsing="false" onAction="#onResetButtonClick" prefHeight="35.0" prefWidth="124.0" style="-fx-background-color: #5c636a;" text="Reset" textFill="WHITE" />
+            <TitledPane animated="false" collapsible="false" layoutX="17.0" layoutY="342.0" prefHeight="136.0" prefWidth="436.0" text="Item Detail">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="110.0" prefWidth="420.0">
+                     <children>
+                        <Button fx:id="removeButton" layoutX="296.0" layoutY="61.0" mnemonicParsing="false" onAction="#onRemoveButtonClick" prefHeight="35.0" prefWidth="124.0" style="-fx-background-color: #f82929;" text="Remove from cart" textFill="WHITE" />
+                        <Button fx:id="addButton" layoutX="296.0" layoutY="17.0" mnemonicParsing="false" onAction="#onAddButtonClick" prefHeight="35.0" prefWidth="124.0" style="-fx-background-color: #0598ff;" text="Add to cart" textFill="WHITE" />
+                        <VBox alignment="CENTER" layoutY="-1.0" prefHeight="106.0" prefWidth="254.0">
+                           <children>
+                              <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="252.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Name" wrappingWidth="99.115234375">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Text>
+                                    <Text fx:id="detailName" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" textAlignment="RIGHT" wrappingWidth="124.46484375" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="252.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Price" wrappingWidth="99.115234375">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Text>
+                                    <Text fx:id="detailPrice" strokeType="OUTSIDE" strokeWidth="0.0" text="Rp. 0,00" textAlignment="RIGHT" wrappingWidth="124.46484375" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="252.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Available Stock" wrappingWidth="99.115234375">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Text>
+                                    <Text fx:id="detailStock" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="RIGHT" wrappingWidth="124.46484375" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </HBox>
+                              <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="265.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Quantity" wrappingWidth="174.115234375">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Text>
+                                    <TextField fx:id="detailQuantity" alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="52.0" promptText="Enter quantity" text="1" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </TitledPane>
+            <Text fx:id="errorText" fill="RED" layoutX="128.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="251.9830722808838" />
+         </children>
+      </AnchorPane>
+   </center>
    <left>
       <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="168.0" style="-fx-background-color: #0598ff; -fx-border-color: #fff; -fx-border-width: 0px 3px 0px 0px;" BorderPane.alignment="CENTER">
          <children>
-            <VBox alignment="CENTER" prefHeight="100.0" prefWidth="141.0">
+            <VBox alignment="CENTER" prefHeight="160.0" prefWidth="152.0">
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
@@ -106,174 +288,4 @@
          </children>
       </VBox>
    </left>
-   <center>
-      <AnchorPane prefHeight="500.0" prefWidth="737.0" BorderPane.alignment="CENTER">
-         <children>
-            <Text fx:id="pageTitle" fill="#0598ff" layoutX="17.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Checkout">
-               <font>
-                  <Font name="System Bold" size="21.0" />
-               </font></Text>
-            <FontAwesomeIconView fill="#0598ff" glyphName="CLOSE" layoutX="695.0" layoutY="33.0" onMouseClicked="#onExitClick" size="20" />
-            <TextField fx:id="searchInput" layoutX="425.0" layoutY="13.0" prefHeight="26.0" prefWidth="259.0" promptText="Search" style="-fx-border-width: 0px 0px 0px 0px; -fx-border-color: #0598FF;" />
-            <FontAwesomeIconView fill="#0598ff" glyphName="SEARCH" layoutX="401.0" layoutY="31.0" size="15" text="" />
-            <TableView layoutX="461.0" layoutY="103.0" prefHeight="230.0" prefWidth="251.0">
-              <columns>
-                <TableColumn prefWidth="83.0" text="Item" />
-                <TableColumn prefWidth="79.0" text="Quantity" />
-                  <TableColumn prefWidth="88.0" text="Price" />
-              </columns>
-            </TableView>
-            <VBox alignment="CENTER" layoutX="462.0" layoutY="346.0" prefHeight="129.0" prefWidth="252.0">
-               <children>
-                  <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="252.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Subtotal" wrappingWidth="99.115234375">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Text>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Rp. 50000" textAlignment="RIGHT" wrappingWidth="124.46484375" />
-                     </children>
-                     <padding>
-                        <Insets left="10.0" right="10.0" />
-                     </padding>
-                  </HBox>
-                  <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="252.0" style="-fx-border-width: 1px; -fx-border-color: #000; -fx-border-width: 0 0 1px 0;">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Discount" wrappingWidth="99.115234375">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Text>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Rp. 50000" textAlignment="RIGHT" wrappingWidth="124.46484375" />
-                     </children>
-                     <padding>
-                        <Insets left="10.0" right="10.0" />
-                     </padding>
-                  </HBox>
-                  <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="252.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total" wrappingWidth="99.115234375">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Text>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Rp. 50000" textAlignment="RIGHT" wrappingWidth="124.46484375">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Text>
-                     </children>
-                     <padding>
-                        <Insets left="10.0" right="10.0" />
-                     </padding>
-                  </HBox>
-                  <Button fx:id="loginBtn" mnemonicParsing="false" prefHeight="35.0" prefWidth="242.0" style="-fx-background-color: #0598ff;" text="Charge" textFill="WHITE">
-                     <VBox.margin>
-                        <Insets top="8.0" />
-                     </VBox.margin>
-                  </Button>
-               </children>
-            </VBox>
-            <Button fx:id="loginBtn1" layoutX="462.0" layoutY="60.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #5c636a;" text="Scan Barcode" textFill="WHITE" />
-            <VBox layoutX="17.0" layoutY="49.0" prefHeight="284.0" prefWidth="436.0">
-               <children>
-      <!--            <HBox alignment="CENTER" layoutX="9.0" layoutY="50.0" prefHeight="431.0" prefWidth="444.0" VBox.vgrow="ALWAYS">-->
-      <!--               <children>-->
-      <!--                  <ScrollPane fx:id="scroll" prefHeight="409.0" prefWidth="444.0" styleClass="transparent">-->
-      <!--                     <HBox.margin>-->
-      <!--                        <Insets top="10.0" />-->
-      <!--                     </HBox.margin>-->
-      <!--                     <content>-->
-      <!--                        <GridPane fx:id="grid">-->
-      <!--                          <rowConstraints>-->
-      <!--                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />-->
-      <!--                          </rowConstraints>-->
-      <!--                           <padding>-->
-      <!--                              <Insets left="10.0" />-->
-      <!--                           </padding>-->
-      <!--                        </GridPane>-->
-      <!--                     </content>-->
-      <!--                  </ScrollPane>-->
-      <!--               </children>-->
-      <!--            </HBox>-->
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                     <children>
-                        <ScrollPane fx:id="scroll" prefHeight="267.0" prefWidth="436.0" styleClass="transparent">
-                           <content>
-                              <GridPane fx:id="grid" alignment="CENTER" prefHeight="0.0" prefWidth="0.0">
-                                 <rowConstraints>
-                                    <RowConstraints minHeight="10.0" prefHeight="200.0" />
-                                 </rowConstraints>
-                                 <padding>
-                                    <Insets left="15.0" />
-                                 </padding>
-                              </GridPane>
-                           </content>
-                           <HBox.margin>
-                              <Insets top="10.0" />
-                           </HBox.margin>
-                        </ScrollPane>
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
-            <Button fx:id="loginBtn11" layoutX="588.0" layoutY="60.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="124.0" style="-fx-background-color: #5c636a;" text="Reset" textFill="WHITE" />
-            <TitledPane animated="false" collapsible="false" layoutX="17.0" layoutY="342.0" prefHeight="136.0" prefWidth="436.0" text="Item Detail">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="110.0" prefWidth="420.0">
-                     <children>
-                        <Button fx:id="loginBtn21" layoutX="296.0" layoutY="61.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="124.0" style="-fx-background-color: #f82929;" text="Remove from cart" textFill="WHITE" />
-                        <Button fx:id="loginBtn211" layoutX="296.0" layoutY="17.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="124.0" style="-fx-background-color: #0598ff;" text="Add to cart" textFill="WHITE" />
-                        <Text fx:id="errorText" fill="RED" layoutX="14.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="248.9830722808838" />
-                        <VBox alignment="CENTER" layoutY="-1.0" prefHeight="106.0" prefWidth="276.0">
-                           <children>
-                              <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="252.0">
-                                 <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Name" wrappingWidth="99.115234375">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Text>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fuuudge meeee" textAlignment="RIGHT" wrappingWidth="124.46484375" />
-                                 </children>
-                                 <padding>
-                                    <Insets left="10.0" right="10.0" />
-                                 </padding>
-                              </HBox>
-                              <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="252.0">
-                                 <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Price" wrappingWidth="99.115234375">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Text>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Rp. 50000" textAlignment="RIGHT" wrappingWidth="124.46484375" />
-                                 </children>
-                                 <padding>
-                                    <Insets left="10.0" right="10.0" />
-                                 </padding>
-                              </HBox>
-                              <HBox alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="28.0" prefWidth="265.0">
-                                 <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Quantity" wrappingWidth="99.115234375">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Text>
-                                    <TextField alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="122.0" promptText="Enter quantity" text="1" />
-                                 </children>
-                                 <padding>
-                                    <Insets left="10.0" right="10.0" />
-                                 </padding>
-                              </HBox>
-                           </children>
-                        </VBox>
-                     </children>
-                  </AnchorPane>
-              </content>
-            </TitledPane>
-         </children>
-      </AnchorPane>
-   </center>
 </BorderPane>

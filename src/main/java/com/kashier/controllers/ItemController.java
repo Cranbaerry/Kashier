@@ -6,39 +6,67 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.harium.postgrest.Condition;
 import com.harium.postgrest.Insert;
+import com.kashier.interfaces.IItemCard;
+import com.kashier.models.InventoryItem;
+import com.kashier.models.InvoiceItem;
 import com.kashier.models.Item;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableColumn;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
 import java.awt.*;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static com.kashier.App.supabase;
 
 
 public class ItemController extends PageController {
     @FXML
-    private Text itemName;
-    @FXML
-    private Text price;
+    private Text itemName, price, outOfStockText;
+
     @FXML
     private ImageView img;
-    private Item item;
+
+    @FXML
+    private Pane itemPane;
+
+    private InventoryItem item;
+
+    private IItemCard cardEvent;
+
+    // https://stackoverflow.com/questions/4685563/how-to-pass-a-function-as-a-parameter-in-java
     @FXML
     private void onItemClick() {
-        System.out.println("Item clicked!");
+        cardEvent.onClickEvent(item);
     }
 
-    public void setData(Item item) {
-        this.item = item;
+    public void setData(InventoryItem item, IItemCard cardEvent) {
+        Locale myIndonesianLocale = new Locale("in", "ID");
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(myIndonesianLocale);
+
+        this.item = (InventoryItem) item;
         this.itemName.setText(item.getName());
-        this.price.setText("$" + item.getPrice());
+        this.price.setText(currencyFormat.format(item.getPrice()));
+        this.cardEvent = cardEvent;
+
+        if (item.getStock() == 0) {
+            // this.itemPane.setDisable(true);
+            this.itemPane.setOpacity(0.5);
+            this.outOfStockText.setVisible(true);
+        }
+
         //Image image = new Image(this.getClass().getResourceAsStream(fruit.getImgSrc()));
         //this.img.setImage(image);
+    }
+    public InventoryItem getItem() {
+        return this.item;
     }
     public Item upsertItem(Item itemObj) {
         try {

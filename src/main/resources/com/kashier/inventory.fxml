@@ -137,7 +137,7 @@
                         <HBox alignment="CENTER" layoutX="15.0" layoutY="348.0" prefHeight="39.0" prefWidth="171.0" spacing="5.0">
                            <children>
                               <Button fx:id="deleteButton" disable="true" mnemonicParsing="false" onAction="#onDeleteClick" prefHeight="30.0" prefWidth="170.0" style="-fx-background-color: #f82929;" text="Delete" textFill="WHITE" />
-                              <Button fx:id="clearButton" mnemonicParsing="false" onAction="#onClearClick" onMouseClicked="#onDeleteClick" prefHeight="30.0" prefWidth="170.0" style="-fx-background-color: #5c636a;" text="Clear" textFill="WHITE" />
+                              <Button fx:id="clearButton" mnemonicParsing="false" onAction="#onClearClick" prefHeight="30.0" prefWidth="170.0" style="-fx-background-color: #5c636a;" text="Clear" textFill="WHITE" />
                            </children>
                            <opaqueInsets>
                               <Insets />

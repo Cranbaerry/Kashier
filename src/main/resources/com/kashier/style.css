@@ -8,6 +8,16 @@
     -fx-background-radius: 5;
 }
 
+.fruit-item:hover{
+    -fx-background-color: #0598ff;
+    -fx-background-radius: 5;
+}
+
+.fruit-item:pressed{
+    -fx-background-color: #00416c;
+    -fx-background-radius: 5;
+}
+
 .shadow{
     -fx-effect: dropShadow(three-pass-box,rgba(0,0,0,0.1), 10.0 , 0.0 , 0.0 ,10.0);
 }

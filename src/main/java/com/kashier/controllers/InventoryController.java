@@ -66,8 +66,6 @@ public class InventoryController extends PageController {
     private void fetchInventory() {
         InventoryItem selectedItem = (InventoryItem) inventoryTable.getSelectionModel().getSelectedItem();
         inventory.clear();
-        // inventoryTable.getItems().clear();
-        // ObservableList<InventoryItem> inventory = inventoryTable.getItems();
         new Thread(){
             @Override
             public void run(){

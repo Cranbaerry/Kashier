@@ -6,12 +6,12 @@ public interface IInvoiceItem extends IItem  {
 
     int getQuantity();
 
-    float getSubtotal();
+    double getSubtotal();
 
     void setInvoiceId(String invoice_id);
 
     void setQuantity(int quantity);
 
-    void setSubtotal(float subtotal);
+    void setSubtotal(double subtotal);
 
 }

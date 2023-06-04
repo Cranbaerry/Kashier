@@ -7,18 +7,26 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="187.0" prefWidth="189.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kashier.controllers.ItemController">
+<Pane fx:id="itemPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onItemClick" prefHeight="138.0" prefWidth="129.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kashier.controllers.ItemController">
+   <userData>
+      <fx:reference source="controller" />
+   </userData>
    <children>
-      <Text fx:id="itemName" layoutX="15.0" layoutY="150.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Item name" textAlignment="CENTER" wrappingWidth="163.33203125">
+      <Text fx:id="itemName" layoutX="10.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Item name" textAlignment="CENTER" wrappingWidth="109.91545104980469">
          <font>
-            <Font size="20.0" />
+            <Font size="15.0" />
          </font>
       </Text>
-      <ImageView fitHeight="110.0" fitWidth="173.0" layoutX="10.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="71.0" fitWidth="127.0" layoutX="10.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@products/170x110.jpg" />
          </image></ImageView>
-      <Text fx:id="price" layoutX="15.0" layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rp. 150,000" textAlignment="CENTER" wrappingWidth="163.33203125">
+      <Text fx:id="price" layoutX="15.0" layoutY="122.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rp. 150,000" textAlignment="CENTER" wrappingWidth="101.0">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Text>
+      <Text fx:id="outOfStockText" fill="RED" layoutX="11.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Out of Stock" textAlignment="CENTER" visible="false" wrappingWidth="109.91545104980469">
          <font>
             <Font size="14.0" />
          </font>
