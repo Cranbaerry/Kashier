@@ -180,22 +180,24 @@ public class InventoryController extends PageController {
             @Override
             public void run(){
             try {
-                // Update Stock
-                Insert.Row data = Insert.row()
-                        .column("qr", item.getQr())
-                        .column("stock", item.getStock());
-                supabase.database().save("inventory", data);
-
                 // Upsert Item
-                data = Insert.row()
+                Insert.Row data = Insert.row()
                         .column("qr", item.getQr())
                         .column("name", item.getName())
                         .column("price", item.getPrice());
                 String res = supabase.database().save("items", data);
                 System.out.println("Upsert Item: " + res);
 
+                // Update Stock
+                data = Insert.row()
+                        .column("qr", item.getQr())
+                        .column("stock", item.getStock());
+                supabase.database().save("inventory", data);
+
                 // Refresh inventory
                 fetchInventory();
+
+                System.out.print("Item added: " + item.getName());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -240,81 +242,4 @@ public class InventoryController extends PageController {
             }.start();
         }
     }
-
-//    public InventoryItem addItem(String qr, int quantity) throws IOException {
-//        // Check if item already exists
-//        InventoryItem item = getItemByQR(qr);
-//
-//        // If item exists in the inventory, update quantity
-//        if (item != null) {
-//            item = inventory.get(qr);
-//            item.setStock(item.getStock() + quantity);
-//        } else {
-//            // Grab item details from items table
-//            item = new InventoryItem();
-//            Item details = new ItemController().getItemByQR(qr);
-//            if (details == null) throw new IOException("Item not found: " + qr);
-//            item.setName(details.getName());
-//            item.setPrice(details.getPrice());
-//            item.setQR(qr);
-//            item.setStock(quantity);
-//        }
-//
-//        // Save to database
-//        Insert.Row data = Insert.row()
-//            .column("qr", item.getQR())
-//            .column("stock", item.getStock());
-//        supabase.database().save("inventory", data);
-//
-//        // Add to inventory
-//        inventory.put(item.getQR(), item);
-//        return inventory.get(item.getQR());
-//    }
-//
-//    public InventoryItem removeItem(String qr, int quantity) throws Exception {
-//        // Check if item already exists
-//        InventoryItem item = getItemByQR(qr);
-//
-//        // If item exists in the inventory, update quantity
-//        if (item != null) {
-//            item = inventory.get(qr);
-//            item.setStock(item.getStock() - quantity);
-//
-//            if (item.getStock() <= 0) {
-//                // Delete from database
-//                Condition conditions = Condition.and(
-//                        Condition.eq("qr", item.getQR())
-//                );
-//                supabase.database().delete("items", conditions);
-//
-//                // Remove from inventory
-//                inventory.remove(item.getQR());
-//            } else {
-//                // Save to database
-//                Insert.Row data = Insert.row()
-//                        .column("qr", item.getQR())
-//                        .column("stock", item.getStock());
-//                supabase.database().save("inventory", data);
-//
-//                // Update item quantity
-//                inventory.put(item.getQR(), item);
-//            }
-//
-//            return inventory.get(item.getQR());
-//        }
-//
-//        return null;
-//    }
-//
-//    public HashMap<String, InventoryItem> getInventory() {
-//        return inventory;
-//    }
-//
-//    public InventoryItem getItemByQR(String qr) {
-//        if (inventory.containsKey(qr)) {
-//            return inventory.get(qr);
-//        }
-//
-//        return null;
-//    }
 }

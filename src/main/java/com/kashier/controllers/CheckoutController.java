@@ -1,9 +1,11 @@
 package com.kashier.controllers;
 
+import com.dynamsoft.dbr.*;
 import com.google.gson.*;
 import com.harium.postgrest.Condition;
 import com.harium.postgrest.Insert;
 import com.kashier.App;
+import com.kashier.VlcjJavaFxApplication;
 import com.kashier.interfaces.IItemCard;
 import com.kashier.models.InventoryItem;
 import com.kashier.models.Invoice;
@@ -13,15 +15,21 @@ import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.geometry.Insets;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
@@ -57,20 +65,20 @@ public class CheckoutController extends PageController  {
 
     private ObservableList<InvoiceItem> invoiceItems;
     private InventoryItem selectedItem;
-
     @FXML
     private TableView invoiceTable;
-
     private Locale myIndonesianLocale = new Locale("in", "ID");
     private NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(myIndonesianLocale);
-
     @FXML private Text errorText, subtotalText, taxText, totalText;
-
     private ArrayList<InventoryItem> items;
-
     private double total, subtotal, tax;
-
     private int row = 0, column = 0;
+    private VlcjJavaFxApplication vlcj;
+    private BarcodeReader br;
+    private Image currentImg;
+    boolean found = false;
+    @FXML private Canvas cv;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         super.initialize(url, resourceBundle);
@@ -133,6 +141,13 @@ public class CheckoutController extends PageController  {
         });
 
         fetchItems();
+
+        try {
+            br = new BarcodeReader(App.DYNAMSOFT_LICENSE);
+        } catch (BarcodeReaderException e) {
+            throw new RuntimeException(e);
+        }
+        vlcj = new VlcjJavaFxApplication();
     }
 
     private void fetchItems()  {
@@ -310,7 +325,7 @@ public class CheckoutController extends PageController  {
                 invoice.setFee(tax);
                 invoice.setSubtotal(subtotal);
                 invoice.setTotal(total);
-                invoice.setIssuedBy(App.account.getId());
+                invoice.setIssued_by(App.account.getId());
 
                 Insert.Row data = Insert.row()
                     .column("id", invoice.getId())
@@ -318,7 +333,7 @@ public class CheckoutController extends PageController  {
                     .column("fee", invoice.getFee())
                     .column("subtotal", invoice.getSubtotal())
                     .column("total", invoice.getTotal())
-                    .column("issued_by", invoice.getIssuedBy());
+                    .column("issued_by", invoice.getIssued_by());
 
                 supabase.database().save("invoices", data);
 
@@ -377,6 +392,119 @@ public class CheckoutController extends PageController  {
             }
             }
         }.start();
+    }
+
+    @FXML private void onScanAction() {
+        new Thread(){
+            @Override
+            public void run(){
+                Platform.runLater(() -> {
+                    try {
+                        if (vlcj.stage == null) {
+                            vlcj.start(new Stage());
+                        } else {
+                            vlcj.stage.show();
+                        }
+
+                        String[] options = new String[2];
+                        options[0] = ":dshow-adev=none";
+                        options[1] = ":live-caching=300";
+                        vlcj.play("dshow://", options);
+
+                        scan();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+        }.start();
+    }
+
+    private void scan() {
+        new Thread(){
+            @Override
+            public void run() {
+                try {
+                    found = false;
+                    String template = null;
+                    // br.initRuntimeSettingsWithString(template, EnumConflictMode.CM_OVERWRITE);
+                    PublicRuntimeSettings settings = br.getRuntimeSettings();
+                    settings.resultCoordinateType = EnumResultCoordinateType.RCT_PIXEL;
+                    br.updateRuntimeSettings(settings);
+
+                    while (!found) {
+                        System.out.println("Capture Frame");
+                        if (vlcj.stage!=null) {
+                            currentImg = getCurrentFrame();
+                            if (currentImg != null) {
+                                // redrawImage(currentImg);
+                                decodeImg(currentImg);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }.start();
+    }
+
+    public Image getCurrentFrame() {
+        return vlcj.getImageView().getImage();
+    }
+
+    private void redrawImage(Image img) {
+////        cv.setWidth(img.getWidth());
+////        cv.setHeight(img.getHeight());
+//        GraphicsContext gc = cv.getGraphicsContext2D();
+//        gc.drawImage(img, 0, 0, cv.getWidth(), cv.getHeight());
+    }
+
+    private void overlayCode(TextResult result) {
+        GraphicsContext gc=cv.getGraphicsContext2D();
+
+        List<Point> points= new ArrayList<Point>();
+        for (Point point : result.localizationResult.resultPoints) {
+            points.add(point);
+        }
+        points.add(result.localizationResult.resultPoints[0]);
+
+        gc.setStroke(Color.RED);
+        gc.setLineWidth(5);
+        gc.beginPath();
+
+        for (int i = 0;i<points.size()-1;i++) {
+            Point point=points.get(i);
+            Point nextPoint=points.get(i+1);
+            gc.moveTo(point.x, point.y);
+            gc.lineTo(nextPoint.x, nextPoint.y);
+        }
+        gc.closePath();
+        gc.stroke();
+    }
+
+    private void decodeImg(Image img) throws BarcodeReaderException, IOException {
+        Date startDate = new Date();
+        Long startTime = startDate.getTime();
+        Long endTime = null;
+
+        TextResult[] results = br.decodeBufferedImage(SwingFXUtils.fromFXImage(img,null), "");
+
+        Date endDate = new Date();
+        endTime = endDate.getTime();
+        for (TextResult result:results) {
+            overlayCode (result);
+            System.out.println("Type: "+result.barcodeFormatString);
+            System.out.println("Text: "+result.barcodeText);
+        }
+
+        if (results.length == 0) {
+            System.out.println("No barcode detected.");
+        } else {
+            found = true;
+        }
+
+        System.out.println("Total: "+(endTime-startTime)+"ms");
     }
 }
 

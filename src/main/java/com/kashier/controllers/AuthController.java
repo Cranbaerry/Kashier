@@ -46,24 +46,30 @@ public class AuthController implements Initializable {
 
     @FXML
     private void onLoginClick() {
-        loginBtn.setDisable(true);
         new Thread(){
             @Override
             public void run(){
+                loginBtn.setDisable(true);
+                boolean status = false;
                 try {
-                    boolean status = login(username.getText(), password.getText());
-                    if (status) {
+                    status = login(username.getText(), password.getText());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                final boolean finalStatus = status;
+                Platform.runLater(() -> {
+                    if (finalStatus) {
                         App.account = getAccount();
-                        App.setRoot("home");
+                        try {
+                            App.setRoot("home");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                         System.out.println("Login successful!");
                     } else {
                         errorText.setText("Invalid credentials!");
                         System.out.println("Login failed!");
                     }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                Platform.runLater(() -> {
                     loginBtn.setDisable(false);
                 });
             }

@@ -2,9 +2,6 @@
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
-<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -18,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kashier.controllers.HomeController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kashier.controllers.HomeController">
    <left>
       <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="168.0" style="-fx-background-color: #0598ff; -fx-border-color: #fff; -fx-border-width: 0px 3px 0px 0px;" BorderPane.alignment="CENTER">
          <children>
@@ -117,7 +114,7 @@
                <children>
                   <Pane prefHeight="104.0" prefWidth="231.0" style="-fx-effect: dropShadow(three-pass-box,rgba(0,0,0,0.1), 10.0 , 0.0 , 0.0 ,10.0); -fx-background-color: #fff; -fx-border-color: #0598ff; -fx-border-width: 0px 0px 0px 3px;">
                      <children>
-                        <Text fill="#0598ff" layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Monthly Earnings" wrappingWidth="145.33672714233398">
+                        <Text fill="#0598ff" layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Total Earnings" wrappingWidth="145.33672714233398">
                            <font>
                               <Font size="17.0" />
                            </font>
@@ -135,7 +132,7 @@
                   </Pane>
                   <Pane prefHeight="104.0" prefWidth="231.0" style="-fx-effect: dropShadow(three-pass-box,rgba(0,0,0,0.1), 10.0 , 0.0 , 0.0 ,10.0); -fx-background-color: #fff; -fx-border-color: #0598ff; -fx-border-width: 0px 0px 0px 3px;">
                      <children>
-                        <Text fill="#0598ff" layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Daily Sales" wrappingWidth="145.33672714233398">
+                        <Text fill="#0598ff" layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Total Sales" wrappingWidth="145.33672714233398">
                            <font>
                               <Font size="17.0" />
                            </font>
@@ -176,18 +173,12 @@
                   <Font size="17.0" />
                </font>
             </Text>
-            <LineChart layoutX="394.0" layoutY="226.0" prefHeight="271.0" prefWidth="323.0" style="-fx-background-color: #fff;">
-              <xAxis>
-                <CategoryAxis side="BOTTOM" />
-              </xAxis>
-              <yAxis>
-                <NumberAxis side="LEFT" />
-              </yAxis>
-            </LineChart>
-            <TableView layoutX="16.0" layoutY="236.0" prefHeight="238.0" prefWidth="379.0">
+            <TableView fx:id="invoiceTable" layoutX="16.0" layoutY="236.0" prefHeight="238.0" prefWidth="698.0">
               <columns>
-                <TableColumn prefWidth="256.0" text="Invoice" />
-                <TableColumn prefWidth="122.0" text="Total" />
+                  <TableColumn fx:id="dateColumn" prefWidth="199.0" text="Date" />
+                <TableColumn fx:id="invoiceColumn" minWidth="7.0" prefWidth="251.0" text="Invoice" />
+                  <TableColumn fx:id="issuerColumn" minWidth="7.0" prefWidth="99.0" style="-fx-alignment: CENTER;" text="Issuer" />
+                <TableColumn fx:id="totalColumn" minWidth="0.0" prefWidth="123.0" style="-fx-alignment: CENTER-RIGHT;" text="Total" />
               </columns>
             </TableView>
          </children>

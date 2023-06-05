@@ -6,8 +6,10 @@ import java.util.ArrayList;
 
 public class Invoice implements IInvoice {
     private double total, discount, fee, subtotal;
-    private String id;
+    private String id, created_at;
     private ArrayList<InvoiceItem> items;
+
+    private String issuer;
 
     private String issued_by;
 
@@ -17,6 +19,14 @@ public class Invoice implements IInvoice {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    public String getIssuer() {
+        return this.issuer;
+    }
+
+    public void setIssuer(String issuer) {
+        this.issuer = issuer;
     }
 
     public double getDiscount() {
@@ -55,11 +65,19 @@ public class Invoice implements IInvoice {
         this.items = items;
     }
 
-    public String getIssuedBy() {
-        return this.issued_by;
+    public String getCreated_at() {
+        return this.created_at;
     }
 
-    public void setIssuedBy(String issued_by) {
-        this.issued_by = issued_by;
+    public void setCreated_at(String createdAt) {
+        this.created_at = createdAt;
+    }
+
+    public void setIssued_by(String issuedBy) {
+        this.issued_by = issuedBy;
+    }
+
+    public String getIssued_by() {
+        return this.issued_by;
     }
 }
