@@ -61,6 +61,7 @@ Kashier uses a several open source projects to be fully functioned:
 - [JavaFX] - Java library for application Graphic User Interface (https://openjfx.io/)
 - [FontAwesomeFX] - Font and icon library  (https://bitbucket.org/Jerady/fontawesomefx)
 - [GSON] - Java serialization/deserilization for handling API responses from Supabase [https://github.com/google/gson]
+- [Dynamsoft Barcode Scanner] - Barcode scanner system (https://www.dynamsoft.com/barcode-reader/)
 - [Java Programming Language]
 
 
