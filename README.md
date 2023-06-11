@@ -1,5 +1,4 @@
 # Kashier
-## _Compact Inventory Manager._
 
 Kashier is an online, easy-to-use, point-of-sales system application using Java & JavaFX technologies which offers an inventory system to add, update, delete, and purchase products.
 
