@@ -1,11 +1,9 @@
 package com.kashier.controllers;
 
-import com.dynamsoft.dbr.*;
 import com.google.gson.*;
 import com.harium.postgrest.Condition;
 import com.harium.postgrest.Insert;
 import com.kashier.App;
-import com.kashier.VlcjJavaFxApplication;
 import com.kashier.interfaces.IItemCard;
 import com.kashier.models.InventoryItem;
 import com.kashier.models.Invoice;
@@ -15,31 +13,26 @@ import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.geometry.Insets;
-import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import static com.kashier.App.supabase;
+import static com.kashier.App.*;
 
 public class CheckoutController extends PageController  {
     @FXML
@@ -73,11 +66,6 @@ public class CheckoutController extends PageController  {
     private ArrayList<InventoryItem> items;
     private double total, subtotal, tax;
     private int row = 0, column = 0;
-    private VlcjJavaFxApplication vlcj;
-    private BarcodeReader br;
-    private Image currentImg;
-    boolean found = false;
-    @FXML private Canvas cv;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -141,13 +129,6 @@ public class CheckoutController extends PageController  {
         });
 
         fetchItems();
-
-        try {
-            br = new BarcodeReader(App.DYNAMSOFT_LICENSE);
-        } catch (BarcodeReaderException e) {
-            throw new RuntimeException(e);
-        }
-        vlcj = new VlcjJavaFxApplication();
     }
 
     private void fetchItems()  {
@@ -395,116 +376,47 @@ public class CheckoutController extends PageController  {
     }
 
     @FXML private void onScanAction() {
-        new Thread(){
-            @Override
-            public void run(){
-                Platform.runLater(() -> {
-                    try {
-                        if (vlcj.stage == null) {
-                            vlcj.start(new Stage());
-                        } else {
-                            vlcj.stage.show();
-                        }
-
-                        String[] options = new String[2];
-                        options[0] = ":dshow-adev=none";
-                        options[1] = ":live-caching=300";
-                        vlcj.play("dshow://", options);
-
-                        scan();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-            }
-        }.start();
-    }
-
-    private void scan() {
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 try {
-                    found = false;
-                    String template = null;
-                    // br.initRuntimeSettingsWithString(template, EnumConflictMode.CM_OVERWRITE);
-                    PublicRuntimeSettings settings = br.getRuntimeSettings();
-                    settings.resultCoordinateType = EnumResultCoordinateType.RCT_PIXEL;
-                    br.updateRuntimeSettings(settings);
+                    final CountDownLatch latch = new CountDownLatch(1);
+                    System.out.println("Executing");
+                    scanBarcode(latch);
+                    latch.await();
+                    System.out.println("Released");
 
-                    while (!found) {
-                        System.out.println("Capture Frame");
-                        if (vlcj.stage!=null) {
-                            currentImg = getCurrentFrame();
-                            if (currentImg != null) {
-                                // redrawImage(currentImg);
-                                decodeImg(currentImg);
+                    if (found) {
+                        System.out.println("Barcode found: " + barcodeResult);
+                        Platform.runLater(() -> {
+                            // Search for item
+                            AtomicBoolean foundItem = new AtomicBoolean(false);
+                            items.forEach(item -> {
+                                if (item.getQr().toLowerCase().equals(barcodeResult.toLowerCase())) {
+                                    selectedItem = item;
+                                    detailName.setText(item.getName());
+                                    detailPrice.setText(String.valueOf(item.getPrice()));
+                                    detailStock.setText(String.valueOf(item.getStock()));
+                                    foundItem.set(true);
+                                }
+                            });
+
+                            if (!foundItem.get()) {
+                                Alert alert2 = new Alert(Alert.AlertType.ERROR);
+                                alert2.initStyle(StageStyle.UTILITY);
+                                alert2.setTitle("Scan Result");
+                                alert2.setHeaderText("Item not found in inventory");
+                                alert2.setContentText("Barcode detected: " + barcodeResult);
+                                alert2.showAndWait();
                             }
-                        }
+                        });
                     }
-                } catch (Exception e) {
+
+                } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
         }.start();
-    }
-
-    public Image getCurrentFrame() {
-        return vlcj.getImageView().getImage();
-    }
-
-    private void redrawImage(Image img) {
-////        cv.setWidth(img.getWidth());
-////        cv.setHeight(img.getHeight());
-//        GraphicsContext gc = cv.getGraphicsContext2D();
-//        gc.drawImage(img, 0, 0, cv.getWidth(), cv.getHeight());
-    }
-
-    private void overlayCode(TextResult result) {
-        GraphicsContext gc=cv.getGraphicsContext2D();
-
-        List<Point> points= new ArrayList<Point>();
-        for (Point point : result.localizationResult.resultPoints) {
-            points.add(point);
-        }
-        points.add(result.localizationResult.resultPoints[0]);
-
-        gc.setStroke(Color.RED);
-        gc.setLineWidth(5);
-        gc.beginPath();
-
-        for (int i = 0;i<points.size()-1;i++) {
-            Point point=points.get(i);
-            Point nextPoint=points.get(i+1);
-            gc.moveTo(point.x, point.y);
-            gc.lineTo(nextPoint.x, nextPoint.y);
-        }
-        gc.closePath();
-        gc.stroke();
-    }
-
-    private void decodeImg(Image img) throws BarcodeReaderException, IOException {
-        Date startDate = new Date();
-        Long startTime = startDate.getTime();
-        Long endTime = null;
-
-        TextResult[] results = br.decodeBufferedImage(SwingFXUtils.fromFXImage(img,null), "");
-
-        Date endDate = new Date();
-        endTime = endDate.getTime();
-        for (TextResult result:results) {
-            overlayCode (result);
-            System.out.println("Type: "+result.barcodeFormatString);
-            System.out.println("Text: "+result.barcodeText);
-        }
-
-        if (results.length == 0) {
-            System.out.println("No barcode detected.");
-        } else {
-            found = true;
-        }
-
-        System.out.println("Total: "+(endTime-startTime)+"ms");
     }
 }
 

@@ -17,13 +17,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.stage.StageStyle;
 
-
 import java.io.IOException;
 import java.net.URL;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.concurrent.CountDownLatch;
 
-import static com.kashier.App.supabase;
+import static com.kashier.App.*;
 
 public class InventoryController extends PageController {
     @FXML private TableView inventoryTable;
@@ -241,5 +243,29 @@ public class InventoryController extends PageController {
                 }
             }.start();
         }
+    }
+
+    @FXML
+    private void onScanClick() {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final CountDownLatch latch = new CountDownLatch(1);
+                    System.out.println("Executing");
+                    scanBarcode(latch);
+                    latch.await();
+                    System.out.println("Released");
+
+                    if (found) {
+                        System.out.println("Barcode found: " + barcodeResult);
+                        qrInput.setText(barcodeResult);
+                    }
+
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }.start();
     }
 }

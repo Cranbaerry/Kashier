@@ -1,15 +1,21 @@
 package com.kashier;
 
+import com.dynamsoft.dbr.*;
 import com.harium.supabase.SupabaseClient;
 import com.kashier.models.Account;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * JavaFX App
@@ -21,7 +27,12 @@ public class App extends Application {
     public static final String DYNAMSOFT_LICENSE = "t0073oQAAADu5LbghXCWDSmoiWEKJB/NXefhMH+urpIkKJl/9LHGsOHyqDrGZ0TIs1EjH78dz1PYE2K+3nWoWCWtaT0ibDc8FBWwjCQ==";
     public static SupabaseClient supabase;
     public static Account account;
-
+    public static VlcjJavaFxApplication vlcj;
+    private static BarcodeReader br;
+    private static volatile Image currentImg;
+    public static volatile boolean found = false;
+    public static volatile boolean isPlaying = false;
+    public static volatile String barcodeResult = "";
     @Override
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("auth"));
@@ -48,27 +59,120 @@ public class App extends Application {
         return fxmlLoader.load();
     }
 
+    public static void scanBarcode(CountDownLatch latch) {
+        new Thread() {
+            @Override
+            public void run() {
+                System.out.println("Setting up stage..");
+                Platform.runLater(() -> {
+                    try {
+                        System.out.println("AAA");
+                        if (vlcj.stage == null) {
+                            vlcj.start(new Stage());
+                        } else {
+                            vlcj.stage.show();
+                        }
+
+                        String[] options = new String[2];
+                        options[0] = ":dshow-adev=none";
+                        options[1] = ":live-caching=300";
+                        vlcj.play("dshow://", options);
+
+                        PublicRuntimeSettings settings = br.getRuntimeSettings();
+                        settings.resultCoordinateType = EnumResultCoordinateType.RCT_PIXEL;
+                        br.updateRuntimeSettings(settings);
+
+                        // Reset values
+                        found = false;
+                        barcodeResult = "";
+
+                        System.out.println("BBB");
+                        // New thread to process scan
+                        processScan(latch);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+        }.start();
+    }
+
+    private static void processScan(CountDownLatch latch) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    while (!found) {
+                        //System.out.println("Scanning");
+                        if (!isPlaying) {
+                            System.out.println("Scan stopped");
+                            break;
+                        }
+
+                        if (vlcj.stage != null) {
+                            currentImg = getCurrentFrame();
+                            if (currentImg != null) {
+                                decodeImg(currentImg);
+                            }
+                        }
+                    }
+                } catch (BarcodeReaderException | IOException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    latch.countDown();
+                }
+            }
+        }.start();
+    }
+
+    public static Image getCurrentFrame() {
+        return vlcj.getImageView().getImage();
+    }
+
+    private static void decodeImg(Image img) throws BarcodeReaderException, IOException {
+        Date startDate = new Date();
+        Long startTime = startDate.getTime();
+        Long endTime = null;
+
+        TextResult[] results = br.decodeBufferedImage(SwingFXUtils.fromFXImage(img,null), "");
+
+        Date endDate = new Date();
+        endTime = endDate.getTime();
+        for (TextResult result:results) {
+            System.out.println("Type: "+result.barcodeFormatString);
+            System.out.println("Text: "+result.barcodeText);
+        }
+
+        if (results.length == 0) {
+            System.out.println("No barcode detected.");
+        } else {
+            found = true;
+            barcodeResult = results[0].barcodeText;
+            Platform.runLater(() -> {
+                try {
+                    vlcj.stage.hide();
+                    vlcj.stop();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
+        System.out.println("Total: "+(endTime-startTime)+"ms");
+    }
+
     public static void main(String[] args) {
         try {
+            vlcj = new VlcjJavaFxApplication();
             supabase = new SupabaseClient(SUPABASE_URL, SUPABASE_KEY);
-            launch();
 
-//            BarcodeReader.initLicense("DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9");
-//
-//            // 2.Create an instance of Barcode Reader.
-//            BarcodeReader dbr = new BarcodeReader();
-//            TextResult[] results = dbr.decodeFileInMemory();
-//            dbr.de
-//
-//            // 4.Output the barcode text.
-//            if (results != null && results.length > 0) {
-//                for (int i = 0; i < results.length; i++) {
-//                    TextResult result = results[i];
-//                    System.out.println("Barcode " + i + ":" + result.barcodeText);
-//                }
-//            } else {
-//                System.out.println("No data detected.");
-//            }
+            try {
+                br = new BarcodeReader(App.DYNAMSOFT_LICENSE);
+            } catch (BarcodeReaderException e) {
+                throw new RuntimeException(e);
+            }
+
+            launch();
         } catch (Exception e) {
             e.printStackTrace();
         }
