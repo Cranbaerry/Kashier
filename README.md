@@ -19,6 +19,7 @@ Kashier is an online, easy-to-use, point-of-sales system application using Java 
 - Search items using the search bar 
 - Scan item barcode to automatically generate item data to add item to the inventory or check out cart
 - Add invoices to the database (Supabase) when item(s) is purchased  
+- Barcode scanner to ease inventory management
 
 
 ## Installation
