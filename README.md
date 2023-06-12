@@ -47,7 +47,7 @@ To run and use Kashier, please follow these steps:
 #### b. Inventory Page
 
 - Select the `Inventory` page to view the current products on the inventory.
-- Enter the item QR code, name, price, stock and press the `Submit` button to add a new item (Scan the item barcode to automatically fill the data).
+- Enter the item QR code (or scan the item barcode), name, price, stock and press the `Submit` button to add a new item.
 - Select an item and change the item QR code, name, price, or stock and press the `Submit` button to update an existing item.
 - Select an item and press the `Delete` button to remove an item from the inventory.
 - Press the `Clear` button clear the input field.
