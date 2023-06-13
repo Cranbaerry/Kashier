@@ -33,10 +33,15 @@ public class AuthController implements Initializable {
         );
 
         String result = supabase.database().find("users", conditions);
+        System.out.println(result);
+
+
         JsonArray arrResult = JsonParser.parseString(result).getAsJsonArray();
         if (arrResult.size() < 1)  return false;
 
         JsonObject loginDetails = arrResult.get(0).getAsJsonObject();
+        loginDetails.get("id");
+        loginDetails.get("password");
         account = new Gson().fromJson(loginDetails, Account.class);
         return true;
     }

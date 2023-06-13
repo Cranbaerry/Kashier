@@ -17,10 +17,9 @@
             <Font size="15.0" />
          </font>
       </Text>
-      <ImageView fitHeight="71.0" fitWidth="127.0" layoutX="10.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@products/170x110.jpg" />
-         </image></ImageView>
+      <ImageView fitHeight="71.0" fitWidth="110.0" layoutX="10.0" layoutY="14.0" pickOnBounds="true">
+         <Image url="https://random-d.uk/api/v2/randomimg" backgroundLoading="true" />
+      </ImageView>
       <Text fx:id="price" layoutX="15.0" layoutY="122.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rp. 150,000" textAlignment="CENTER" wrappingWidth="101.0">
          <font>
             <Font size="11.0" />

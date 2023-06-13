@@ -66,16 +66,16 @@ public class App extends Application {
                 System.out.println("Setting up stage..");
                 Platform.runLater(() -> {
                     try {
-                        System.out.println("AAA");
                         if (vlcj.stage == null) {
                             vlcj.start(new Stage());
                         } else {
                             vlcj.stage.show();
                         }
 
-                        String[] options = new String[2];
+                        String[] options = new String[3];
                         options[0] = ":dshow-adev=none";
                         options[1] = ":live-caching=300";
+                        //options[2] = ":dshow-vdev=HTC Vive";
                         vlcj.play("dshow://", options);
 
                         PublicRuntimeSettings settings = br.getRuntimeSettings();
@@ -86,7 +86,6 @@ public class App extends Application {
                         found = false;
                         barcodeResult = "";
 
-                        System.out.println("BBB");
                         // New thread to process scan
                         processScan(latch);
                     } catch (Exception e) {
